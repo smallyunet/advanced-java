@@ -1,17 +1,17 @@
-## 面试题
-- 为什么使用消息队列？
-- 消息队列有什么优点和缺点？
-- Kafka、ActiveMQ、RabbitMQ、RocketMQ 都有什么区别，以及适合哪些场景？
+## Interview questions
+- Why use message queues?
+- What are the advantages and disadvantages of message queues?
+- What are the differences between Kafka, ActiveMQ, RabbitMQ and RocketMQ, and what scenarios are suitable for them?
 
-## 面试官心理分析
-其实面试官主要是想看看：
+## Interviewer Psycholological Analysis
+In face, the interviewer maninly wants to see:
 
-- **第一**，你知不知道你们系统里为什么要用消息队列这个东西？<br>
-不少候选人，说自己项目里用了 Redis、MQ，但是其实他并不知道自己为什么要用这个东西。其实说白了，就是为了用而用，或者是别人设计的架构，他从头到尾都没思考过。<br>
-没有对自己的架构问过为什么的人，一定是平时没有思考的人，面试官对这类候选人印象通常很不好。因为面试官担心你进了团队之后只会木头木脑的干呆活儿，不会自己思考。
+- **First**, do you know why message queuing is used in your system?    
+Many candidates say that they uesd Redis and MQ in their projects, but in fact they don't know why they used it. In fact, to put ot plainly, it is for use, or the structure designed by others, he never thought about it from beginning to end.    
+Those who haven't asked why they are structured must be people who don't usually think about it. Interviewers usually have a bad impression of such candidates. Because the interviewer is afraid that when you join the team, you will only do dull work and will not think for yourself.
 
-- **第二**，你既然用了消息队列这个东西，你知不知道用了有什么好处&坏处？<br>
-你要是没考虑过这个，那你盲目弄个 MQ 进系统里，后面出了问题你是不是就自己溜了给公司留坑？你要是没考虑过引入一个技术可能存在的弊端和风险，面试官把这类候选人招进来了，基本可能就是挖坑型选手。就怕你干 1 年挖一堆坑，自己跳槽了，给公司留下无穷后患。
+- **Second**, since you use the message queue, do you know what's the advantage and disadvantage of using it?    
+If you haven't thought about it, then you blindly get an MQ into the system, and there's a problem behind it. Did you slip away and leave a hole for the company? If you don't consider the drawbacks and risk of introducing a technology, the interviewer will recruit such candidates, which is basically a digger. I'm afraid you'll dig a lot of pits for a year and hop your own job, leaving endless.
 
 - **第三**，既然你用了 MQ，可能是某一种 MQ，那么你当时做没做过调研？<br>
 你别傻乎乎的自己拍脑袋看个人喜好就瞎用了一个 MQ，比如 Kafka，甚至都从没调研过业界流行的 MQ 到底有哪几种。每一个 MQ 的优点和缺点是什么。每一个 MQ **没有绝对的好坏**，但是就是看用在哪个场景可以**扬长避短，利用其优势，规避其劣势**。<br>

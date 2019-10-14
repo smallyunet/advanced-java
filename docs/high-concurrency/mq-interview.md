@@ -30,7 +30,7 @@
 
 (The interviewer already feeld that you can't do it. He doesn't think much about it at ordinary times.)
 
-**Interviewer**：What are the differences between 'Kafka'、'ActiveMQ'、'RabbitMQ'、'RocketMQ'?
+**Interviewer**：What are the differences between 'Kafka', 'ActiveMQ', 'RabbitMQ', 'RocketMQ'?
 
 (The interviewer asks you this question, that is to say, bypass the more empty topic and see directly whether you know about all kinds of 'MQ' middleware, whether you have done your homework and whether you have done any research.)
 
