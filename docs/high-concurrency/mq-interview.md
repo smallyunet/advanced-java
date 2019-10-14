@@ -1,14 +1,14 @@
 ## Message Queue Interview Scenario
 
-**Interviewer**：Hello
+**Interviewer**：Hello.
 
-**Candidate**：Hello
+**Candidate**：Hello.
 
 （The interviewer saw that on your resume, well, there's a bright spot. You used 'MQ' in your project, for example, you used 'ActiveMQ'.）
 
-**Interviewer**：Have you ever uesd message queues in your system? (The interviewer opened the interview in a casual tone)
+**Interviewer**：Have you ever uesd message queues in your system? (The interviewer opened the interview in a casual tone.)
 
-**Candidate**：Used (I feel nothing at this time.)
+**Candidate**：Used (You feel nothing at this time.)
 
 **Interviewer**：So how do you use message queues in your projects?
 
@@ -18,7 +18,7 @@
 
 **Interviewer**：So why do you use message queues? If your order system does not send a message to 'MQ', but directly calls an interface of the inventory system, then the call succeeds directly and the inventory is updated
 
-**Candidate**：Well, yes. (FOr a moment, why? I haven't thought about it very carefully. The boss let it go.) Then you talked nonsense.
+**Candidate**：Well, yes. (For a moment, why? I haven't thought about it very carefully. The boss let it go.) Then you talked nonsense.
 
 (The interviewer listened to you for a moment, then listened to your nonsense, and began to feel something about it. He doubt that you have thought about it before.)
 
@@ -28,42 +28,42 @@
 
 **Candidate**：This... It's true I haven't thought much about this problem in the ordinary time. Nonsense.
 
-(The interviewer already feeld that your buddies can't do it. He doesn't think much about it at ordinary times.)
+(The interviewer already feeld that you can't do it. He doesn't think much about it at ordinary times.)
 
 **Interviewer**：`Kafka`、`ActiveMQ`、`RabbitMQ`、`RocketMQ` 都有什么区别？
 
-（面试官问你这个问题，就是说，绕过比较虚的话题，直接看看你对各种 `MQ` 中间件是否了解，是否做过功课，是否做过调研）
+(The interviewer asks you this question, that is to say, bypass the more empty topic and see directly whether you know about all kinds of 'MQ' middleware, whether you have done your homework and whether you have done any research.)
 
-**Candidate**：我们就用过 `ActiveMQ`，所以别的没用过。。。区别，也不太清楚。。。
+**Candidate**：We used ActiveMQ, so nothing else. The difference is not very clear...
 
-（面试官此时更是觉得你这哥儿们平时就是瞎用，根本就没什么思考，觉得不行）
+(The interviewer feels that you're just using it blindly, and that you don't have any thinking at all. You don't think you can do it.)
 
-**Interviewer**：那你们是如何保证消息队列的高可用啊？
+**Interviewer**：So how do you ensure high availability of message queues?
 
-**Candidate**：这个。。。我平时就是简单走 API 调用一下，不太清楚消息队列怎么部署的。。。
+**Candidate**：This... I usually simply go API calls, not very clear how the message queue is deployes...
 
-**Interviewer**：如何保证消息不被重复消费啊？如何保证消费的时候是幂等的啊？
+**Interviewer**：How to ensure that news is not re-consumed? How to ensure that consumption is idempotent?
 
-**Candidate**：啥？（`MQ` 不就是写入&消费就可以了，哪来这么多问题）
+**Candidate**：What? ('MQ' is not just writing-consuming, where are so many problems?)
 
-**Interviewer**：如何保证消息的可靠性传输啊？要是消息丢失了怎么办啊？
+**Interviewer**：How to ensure the reliable transmisiion of messages? What if the message is lost?
 
-**Candidate**：我们没怎么丢过消息啊。。。
+**Candidate**：We haven't lost much information...
 
-**Interviewer**：那如何保证消息的顺序性？
+**Interviewer**：How to ensure the sequence of messages?
 
-**Candidate**：顺序性？什么意思？我为什么要保证消息的顺序性？它不是本来就有顺序吗？
+**Candidate**：Sequentially? What do you mean? Why do I want to ensure the sequence of message? Isn't it in order?
 
-**Interviewer**：如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？
+**Interviewer**：How to solve the problem of delay and expiration of message queue? What should I do when the message queue is full? The are millions of news backing for hours, how can we solve it?
 
-**Candidate**：不是，我这平时没遇到过这些问题啊，就是简单用用，知道 `MQ` 的一些功能。
+**Candidate**：No, I haven't encountered these problems at ordinary times. It's just simple to use and know some functions of 'MQ'.
 
-**Interviewer**：如果让你写一个消息队列，该如何进行架构设计啊？说一下你的思路。
+**Interviewer**：If you were asked to write a message queue, how would you design the architecture? Tell me your thoughts.
 
-**Candidate**：。。。。。我还是走吧。。。。
+**Candidate**：... I'd better go.
 
 ---
 
-这其实是面试官的一种面试风格，就是说面试官的问题不是发散的，而是从一个小点慢慢铺开。比如说面试官可能会跟你聊聊高并发话题，就这个话题里面跟你聊聊缓存、`MQ` 等等东西，**由浅入深，一步步深挖**。
+This is actually an interview style of the interviewer, that is to say, the interviewer's questions are not divergent, but spread out slowly from a small point. For example, the interviewer may talk to you about high-concurrent topics, such as caching, 'MQ', etc. On this topic, **from shallow to deep, step by step**.
 
-其实上面是一个非常典型的关于消息队列的技术考察过程，好的面试官一定是从你做过的某一个点切入，然后层层展开深入考察，一个接一个问，直到把这个技术点刨根问底，问到最底层。
+In fact, the above is a very typical process of technical investigation about message queue. A good interviewer must start from a point you have done, and then conduct in-depth investigation layer by layer, one by one, until the technical point is thoroughly explored and ased to the bottom.
