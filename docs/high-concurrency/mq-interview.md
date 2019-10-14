@@ -30,7 +30,7 @@
 
 (The interviewer already feeld that you can't do it. He doesn't think much about it at ordinary times.)
 
-**Interviewer**：`Kafka`、`ActiveMQ`、`RabbitMQ`、`RocketMQ` 都有什么区别？
+**Interviewer**：What are the differences between 'Kafka'、'ActiveMQ'、'RabbitMQ'、'RocketMQ'?
 
 (The interviewer asks you this question, that is to say, bypass the more empty topic and see directly whether you know about all kinds of 'MQ' middleware, whether you have done your homework and whether you have done any research.)
 
@@ -58,7 +58,7 @@
 
 **Candidate**：No, I haven't encountered these problems at ordinary times. It's just simple to use and know some functions of 'MQ'.
 
-**Interviewer**：If you were asked to write a message queue, how would you design the architecture? Tell me your thoughts.
+**Interviewer**：If you were to develop a message queue, how would you design the architecture? Tell me your thoughts.
 
 **Candidate**：... I'd better go.
 
