@@ -13,32 +13,32 @@ Those who haven't asked why they are structured must be people who don't usually
 - **Second**, since you use the message queue, do you know what's the advantage and disadvantage of using it?    
 If you haven't thought about it, then you blindly get an MQ into the system, and there's a problem behind it. Did you slip away and leave a hole for the company? If you don't consider the drawbacks and risk of introducing a technology, the interviewer will recruit such candidates, which is basically a digger. I'm afraid you'll dig a lot of pits for a year and hop your own job, leaving endless.
 
-- **第三**，既然你用了 MQ，可能是某一种 MQ，那么你当时做没做过调研？<br>
-你别傻乎乎的自己拍脑袋看个人喜好就瞎用了一个 MQ，比如 Kafka，甚至都从没调研过业界流行的 MQ 到底有哪几种。每一个 MQ 的优点和缺点是什么。每一个 MQ **没有绝对的好坏**，但是就是看用在哪个场景可以**扬长避短，利用其优势，规避其劣势**。<br>
-如果是一个不考虑技术选型的候选人招进了团队，leader 交给他一个任务，去设计个什么系统，他在里面用一些技术，可能都没考虑过选型，最后选的技术可能并不一定合适，一样是留坑。
+- **Third**, since you used MQ, maybe some kind of MQ, did you do any research at that time?    
+Don't foolishly pat your head to see your personal preferences and use an MQ, such as Kafka, without even investigating what kinds of MQ are popular in the industry. What are the advantages and disadvantages of each MQ? Each MQ **has no absolute good or bad**, but it depends on which scenaric can be used to **enhance strengths and avoid wearknesses, make use of its strengths and avoid its weaknesses**.    
+If a candidate who does not consider technology selection is recruited into the team, leader gives him a task to design a system. He uses some technology in it, and may not consider the selection. The last technology may not be appropriate, but it is pitkeeping.
 
-## 面试题剖析
-### 为什么使用消息队列
-其实就是问问你消息队列都有哪些使用场景，然后你项目里具体是什么场景，说说你在这个场景里用消息队列是什么？
+## Analysis of Interview Questions
+### Why use message queues
+In fact, it si to ask you what use scenarics are there in the message queue, and then what specific scenarios are in you project, and what are using the message queue in this scenario?
 
-面试官问你这个问题，**期望的一个回答**是说，你们公司有个什么**业务场景**，这个业务场景有个什么技术挑战，如果不用 MQ 可能会很麻烦，但是你现在用了 MQ 之后带给了你很多的好处。
+The interviewer asks you this questiong, **An expected answer** is to say what **business scenario** your company has, what technical challenges this business scenario has, if you don't use MQ, it may be troublesome, but now you use MQ after bringing you a lot of benefits.
 
-先说一下消息队列常见的使用场景吧，其实场景有很多，但是比较核心的有 3 个：**解耦**、**异步**、**削峰**。
+Let's start with the common usage scenarios of message queues. In fact, there are many scenarios, but there are three core scenarios: **decoupling**, **asynchronization** and **peak shaving**.
 
-#### 解耦
-看这么个场景。A 系统发送数据到 BCD 三个系统，通过接口调用发送。如果 E 系统也要这个数据呢？那如果 C 系统现在不需要了呢？A 系统负责人几乎崩溃......
+#### decoupling
+Look at this scene. System A sends data to three systems of BCD and sends it through interface calls. What if the E system aslo wants this data? What if C system is not needed now? System A leader almost collapsed...
 
 ![mq-1](/images/mq-1.png)
 
-在这个场景中，A 系统跟其它各种乱七八糟的系统严重耦合，A 系统产生一条比较关键的数据，很多系统都需要 A 系统将这个数据发送过来。A 系统要时时刻刻考虑 BCDE 四个系统如果挂了该咋办？要不要重发，要不要把消息存起来？头发都白了啊！
+In this scenario, system A is heavily coupled with other messy systems. System A generates a critical piece of data, and many systems need system A to send this data. System A shoud always consider the four BCDE systems. What if they hang up? Do you want to resend or save the message? Your hair is white!
 
-如果使用 MQ，A 系统产生一条数据，发送到 MQ 里面去，哪个系统需要数据自己去 MQ 里面消费。如果新系统需要数据，直接从 MQ 里消费即可；如果某个系统不需要这条数据了，就取消对 MQ 消息的消费即可。这样下来，A 系统压根儿不需要去考虑要给谁发送数据，不需要维护这个代码，也不需要考虑人家是否调用成功、失败超时等情况。
+If MQ is used, system A generates a piece of data and sends it to MQ, which system needs data to consume in MQ itself. If the new system needs data, it can be consumed directly from MQ; if a system does not need this data, it can cancel the consumption of MQ messages. In this way, system A does not need to consider who to send data to, maintain the code, or whether the call succeeds or fails over time.
 
 ![mq-2](/images/mq-2.png)
 
-**总结**：通过一个 MQ，Pub/Sub 发布订阅消息这么一个模型，A 系统就跟其它系统彻底解耦了。
+**Summary**: System A is completely decoupled from other system through a model of MQ, Pub/Sub publishing subscription messages.
 
-**面试技巧**：你需要去考虑一下你负责的系统中是否有类似的场景，就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用 MQ 给它异步化解耦，也是可以的，你就需要去考虑在你的项目里，是不是可以运用这个 MQ 去进行系统的解耦。在简历中体现出来这块东西，用 MQ 作解耦。
+**Interview Skills**: You need to consider whether there is a similar scenario in the system you are responsible for, that is, a system or a module that calls multiple systems or modules, and the calls between them are complex and difficult to maintain. But in fact, this call does not need to directly call the interface synchronously. If it is possible to use MQ to decouple it asynchronously, you need to consider whether you can use this MQ to decouple the system in your project. This is reflected in the resume, using MQ as decoupling.
 
 #### 异步
 再来看一个场景，A 系统接收一个请求，需要在自己本地写库，还需要在 BCD 三个系统写库，自己本地写库要 3ms，BCD 三个系统分别写库要 300ms、450ms、200ms。最终请求总延时是 3 + 300 + 450 + 200 = 953ms，接近 1s，用户感觉搞个什么东西，慢死了慢死了。用户通过浏览器发起请求，等待个 1s，这几乎是不可接受的。
