@@ -25,7 +25,7 @@ The interviewer asks you this questiong, **An expected answer** is to say what *
 
 Let's start with the common usage scenarios of message queues. In fact, there are many scenarios, but there are three core scenarios: **decoupling**, **asynchronization** and **peak shaving**.
 
-#### decoupling
+#### Decoupling
 Look at this scene. System A sends data to three systems of BCD and sends it through interface calls. What if the E system aslo wants this data? What if C system is not needed now? System A leader almost collapsed...
 
 ![mq-1](/images/mq-1.png)
@@ -40,8 +40,8 @@ If MQ is used, system A generates a piece of data and sends it to MQ, which syst
 
 **Interview Skills**: You need to consider whether there is a similar scenario in the system you are responsible for, that is, a system or a module that calls multiple systems or modules, and the calls between them are complex and difficult to maintain. But in fact, this call does not need to directly call the interface synchronously. If it is possible to use MQ to decouple it asynchronously, you need to consider whether you can use this MQ to decouple the system in your project. This is reflected in the resume, using MQ as decoupling.
 
-#### 异步
-再来看一个场景，A 系统接收一个请求，需要在自己本地写库，还需要在 BCD 三个系统写库，自己本地写库要 3ms，BCD 三个系统分别写库要 300ms、450ms、200ms。最终请求总延时是 3 + 300 + 450 + 200 = 953ms，接近 1s，用户感觉搞个什么东西，慢死了慢死了。用户通过浏览器发起请求，等待个 1s，这几乎是不可接受的。
+#### Asynchronous
+In another scenario, system A receives a request and needs to write libraries locally. It also needs to write libraries locally in three systems of BCD, three systems of BCD need to write libraries 3ms and three systems of BCD need to write libraries 300ms, 450ms and 200ms respectively. The total latency of the final request is 3 + 300 + 450 + 200 = 953ms, which is close to 1s. The user feels like he's doing something and he's dead and show. It is almost unacceptable for a user to initiate a request through a browser and wait for one second.
 
 ![mq-3](/images/mq-3.png)
 
