@@ -45,18 +45,18 @@ In another scenario, system A receives a request and needs to write libraries lo
 
 ![mq-3](/images/mq-3.png)
 
-一般互联网类的企业，对于用户直接的操作，一般要求是每个请求都必须在 200 ms 以内完成，对用户几乎是无感知的。
+For the direct operation of uesrs, the general requirement of Internet enterprises is that each request must be completed within 200ms, and they are almost imperceptible to users.
 
-如果**使用 MQ**，那么 A 系统连续发送 3 条消息到 MQ 队列中，假如耗时 5ms，A 系统从接受一个请求到返回响应给用户，总时长是 3 + 5 = 8ms，对于用户而言，其实感觉上就是点个按钮，8ms 以后就直接返回了，爽！网站做得真好，真快！
+If **uses MQ**, system a will send three messages to MQ queue continuously. If it takes 5ms, system A will take 3 + 5 = 8ms from receiving a request to returning a response to the user. For the user, it feels like clicking a button. After 8ms, it will return directly. Cool! The website is well done, so fast!
 
 ![mq-4](/images/mq-4.png)
 
-#### 削峰
-每天 0:00 到 12:00，A 系统风平浪静，每秒并发请求数量就 50 个。结果每次一到 12:00 ~ 13:00 ，每秒并发请求数量突然会暴增到 5k+ 条。但是系统是直接基于 MySQL 的，大量的请求涌入 MySQL，每秒钟对 MySQL 执行约 5k 条 SQL。
+#### Peak clipping
+From 0:00 to 23:00 every day, system A is calm, and the number of concurrent requests per second is 50. Results from 12:00 to 13:00 every time, the number of concurrent requests per second suddenly increased to 5K+. But the system is directly based on MYSQL, a large number of requests flow into mysql, and about 5K SQL are executed for MYSQL every second.
 
-一般的 MySQL，扛到每秒 2k 个请求就差不多了，如果每秒请求到 5k 的话，可能就直接把 MySQL 给打死了，导致系统崩溃，用户也就没法再使用系统了。
+Ordinary MySQL, carrying up to 2K requests per second is almose the same. If the request reaches 5K per second, MySQL may be killed directly, resulting in system crash, and users will no longer be able to use the system.
 
-但是高峰期一过，到了下午的时候，就成了低峰期，可能也就 1w 的用户同时在网站上操作，每秒中的请求数量可能也就 50 个请求，对整个系统几乎没有任何的压力。
+In general, it's almost as long as you carry 2K requests per second. If you request 5K requests per second, you may directly kill mysql, which causes the system to crash, and users will no longer be able to use the system. But after the peak period, in the afternoon, it will become a low peak period. It may be that there are only 1W users operating on the website at the same time. The number of requests per second may also be 50, which has little pressure on the while system.
 
 ![mq-5](/images/mq-5.png)
 
