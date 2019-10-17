@@ -19,25 +19,25 @@ There's a scene like this. Data 1/2/3 enters Kafka in turn, Kafka will assign an
 
 ![mq-10](/images/mq-10.png)
 
-如果消费者干的事儿是拿一条数据就往数据库里写一条，会导致说，你可能就把数据 1/2 在数据库里插入了 2 次，那么数据就错啦。
+If the consumer's job is to take a piece of data and write one in the database, it will lead to saying that you may have inserted 1/2 of the data into the database twice, then the data is wrong.
 
-其实重复消费不可怕，可怕的是你没考虑到重复消费之后，**怎么保证幂等性**。
+In fact, repeated consumption is not terrible. What's terrible is that you don't consider how to **guarantee idempotence after repeated consumption**.
 
-举个例子吧。假设你有个系统，消费一条消息就往数据库里插入一条数据，要是你一个消息重复两次，你不就插入了两条，这数据不就错了？但是你要是消费到第二次的时候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数据，从而保证了数据的正确性。
+Let's give you an example. Suppose you have a system that inserts a piece of data into the database when consuming a message. If you repeat a message twice, you will not insert two pieces of data. Is the data correct? But if you spend the second time, you can judge whether you have already consumed it. If you just throw it away, you will not keep a piece of data, so as to ensure the correctness of the data.
 
-一条数据重复出现两次，数据库里就只有一条数据，这就保证了系统的幂等性。
+When a piece of data appears twice, there is only one piece of data in the database, which ensures the idempotence of the system.
 
-幂等性，通俗点说，就一个数据，或者一个请求，给你重复来多次，你得确保对应的数据是不会改变的，**不能出错**。
+Idempotence, to put it more simply, you need to make sure that the corresponding data will **not change** if you repeat a data or a request multiple times.
 
-所以第二个问题来了，怎么保证消息队列消费的幂等性？
+So the second question is, how to guarantee the idempotence of message queue consumption?
 
-其实还是得结合业务来思考，我这里给几个思路：
+In fact, we have to think about it in combination with business. Here are some ideas:
 
-- 比如你拿个数据要写库，你先根据主键查一下，如果这数据都有了，你就别插入了，update 一下好吧。
-- 比如你是写 Redis，那没问题了，反正每次都是 set，天然幂等性。
-- 比如你不是上面两个场景，那做的稍微复杂一点，你需要让生产者发送每条数据的时候，里面加一个全局唯一的 id，类似订单 id 之类的东西，然后你这里消费到了之后，先根据这个 id 去比如 Redis 里查一下，之前消费过吗？如果没有消费过，你就处理，然后这个 id 写 Redis。如果消费过了，那你就别处理了，保证别重复处理相同的消息即可。
-- 比如基于数据库的唯一键来保证重复数据不会重复插入多条。因为有唯一键约束了，重复数据插入只会报错，不会导致数据库中出现脏数据。
+- For example, if you want to write a data to the database, you need to check it according to the primary key first. If you have all the data, don't insert it. Update it.
+- For example, if you write redis, it's OK. Anyway, every time it's set, natural idempotence.
+- For example, you are not in the above two scenarios, which is a little more complicated. When you need to ask the producer to send each data, you need to add a globally unique ID, such as the order ID. After you consume it here, you need to check it in redis according to this ID. Have you consumed it before? If you haven't consumed it, you will process it. Then the ID will write redis. If you has been consumed, then you should not deal with it. Make sure not to deal with the same message repeatedly.
+- For example, the unique key based on the database ensures that duplicate data will not be repeatedly inserted. Because there is only one key constraint, repeated data insertion will only report errors ans will not cause dirty data in the database.
 
 ![mq-11](/images/mq-11.png)
 
-当然，如何保证 MQ 的消费是幂等性的，需要结合具体的业务来看。
+Of course, how to ensure that MQ consumption is idempotent needs to be combined with specific business.
