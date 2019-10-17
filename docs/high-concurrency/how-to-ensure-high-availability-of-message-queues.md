@@ -21,15 +21,15 @@ RabbitMQ has three modes: stand-alone mode, general cluster mode and image clust
 Stand alone mode, which is demo level, is generally the mode where you start playing locally, and no one uses stand-slone mode for production.
 
 #### Gerneral cluster mode (no high availability)
-普通集群模式，意思就是在多台机器上启动多个 RabbitMQ 实例，每个机器启动一个。你**创建的 queue，只会放在一个 RabbitMQ 实例上**，但是每个实例都同步 queue 的元数据（元数据可以认为是 queue 的一些配置信息，通过元数据，可以找到 queue 所在实例）。你消费的时候，实际上如果连接到了另外一个实例，那么那个实例会从 queue 所在实例上拉取数据过来。
+The common cluster mode means to start multiple RabbitMQ instances on multiple machines, one for each machine. The queue you **create will only be placed on one RabbitMQ instance**, but each instance synchronizes the metadata of the queue (the metadata can be considered as some configuration information of the queue. Through the metadata, you can find the instance where the queue is located). When you consume, in fact, if you connect to another instance, that instance will pull data from the instance where the queue is located.
 
 ![mq-7](/images/mq-7.png)
 
-这种方式确实很麻烦，也不怎么好，**没做到所谓的分布式**，就是个普通集群。因为这导致你要么消费者每次随机连接一个实例然后拉取数据，要么固定连接那个 queue 所在实例消费数据，前者有**数据拉取的开销**，后者导致**单实例性能瓶颈**。
+This method is really troublesome and not very good. If **fails to achieve the so-called distributed**, it is a common cluster. Because this causes you to either connect one instance randomly and pull data at a time, or connect the consumption data of the instance hwere the queue is located. The format has **data pulling overhead** and the latter results in **single instance performance bottleneck**.
 
-而且如果那个放 queue 的实例宕机了，会导致接下来其他实例就无法从那个实例拉取，如果你**开启了消息持久化**，让 RabbitMQ 落地存储消息的话，**消息不一定会丢**，得等这个实例恢复了，然后才可以继续从这个 queue 拉取数据。
+In addition, if the queue instance goes down, other instances will not be able to pull data from that instance. If you **enable message persistence** and let RabbitMQ land to store messages, the **message will not be lost**. You need to wait for this instance to reconver before you can continue to pull data from the queue.
 
-所以这个事儿就比较尴尬了，这就**没有什么所谓的高可用性**，**这方案主要是提高吞吐量的**，就是说让集群中多个节点来服务某个 queue 的读写操作。
+So it's a bit awkward. There is **no so-called high availability** in **this scheme is mainly to improve the throughput**, that is to say, let multiple nodes in the cluster serve the read and write operations of a queue.
 
 #### 镜像集群模式（高可用性）
 这种模式，才是所谓的 RabbitMQ 的高可用模式。跟普通集群模式不一样的是，在镜像集群模式下，你创建的 queue，无论元数据还是 queue 里的消息都会**存在于多个实例上**，就是说，每个 RabbitMQ 节点都有这个 queue 的一个**完整镜像**，包含 queue 的全部数据的意思。然后每次你写消息到 queue 的时候，都会自动把**消息同步**到多个实例的 queue 上。
