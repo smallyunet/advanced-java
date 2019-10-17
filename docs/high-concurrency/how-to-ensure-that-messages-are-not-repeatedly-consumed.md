@@ -1,21 +1,21 @@
-## 面试题
-如何保证消息不被重复消费？或者说，如何保证消息消费的幂等性？
+## Interview questions
+How to ensure that messages are noe consumed repeatedly? In other words, how to ensure the idempotence of message consumption?
 
-## 面试官心理分析
-其实这是很常见的一个问题，这俩问题基本可以连起来问。既然是消费消息，那肯定要考虑会不会重复消费？能不能避免重复消费？或者重复消费了也别造成系统异常可以吗？这个是 MQ 领域的基本问题，其实本质上还是问你**使用消息队列如何保证幂等性**，这个是你架构里要考虑的一个问题。
+## Psychological analysis of interviewers
+In fact, this is s avery common question. These two questions can be asked together. Since it's consumption message, we must consider whether it will be repeated consumption. Can we avoid repeated consumption? Or is it OK to repeat consumption without causing system exceptions? This is the basic problem in MQ field. In fact, it is still a question to ask you **how to ensure idempotence** by using message queuing. This is a question to be considered in your architecture.
 
-## 面试题剖析
-回答这个问题，首先你别听到重复消息这个事儿，就一无所知吧，你**先大概说一说可能会有哪些重复消费的问题**。
+## Analysis of interview questions
+To answer this question, first of all, you don't need to hear about repeated information, so you have no idea. First of all, you can say about the possible repeated consumption problems.
 
-首先，比如 RabbitMQ、RocketMQ、Kafka，都有可能会出现消息重复消费的问题，正常。因为这问题通常不是 MQ 自己保证的，是由我们开发来保证的。挑一个 Kafka 来举个例子，说说怎么重复消费吧。
+First of all, for example, RabbitMQ, RocketMQ and Kafka may have the problem of repeated message consumption, which is normal. Because this problem is usually not guaranted by MQ itself, but by our development. Take Kafka, for example, and talk about how to re consume.
 
-Kafka 实际上有个 offset 的概念，就是每个消息写进去，都有一个 offset，代表消息的序号，然后 consumer 消费了数据之后，**每隔一段时间**（定时定期），会把自己消费过的消息的 offset 提交一下，表示“我已经消费过了，下次我要是重启啥的，你就让我继续从上次消费到的 offset 来继续消费吧”。
+Kafka actually has an offset consept, that is, every message written in has an offset, which represents the sequence number of the message. Then after the consumer consumes the data, **every other period of time** (regular time), he will submit the offset of the message he has consumed, which means "I have consumed it. if I restart something next time, you will let me continue to cancel it from the last time. Pay the offset to continue consumption."
 
-但是凡事总有意外，比如我们之前生产经常遇到的，就是你有时候重启系统，看你怎么重启了，如果碰到点着急的，直接 kill 进程了，再重启。这会导致 consumer 有些消息处理了，但是没来得及提交 offset，尴尬了。重启之后，少数消息会再次消费一次。
+But there are always accidents. For example, what we often encounter in previous production is that you sometimes restart the system to see how you restart it. If you are in a bit of hurry, just kill the process and restart it. This will cause some messages of consumer to be processed, but the offset is not submitted in time, which is embarrassing. After the restart, a few messages will be consumed again.
 
-举个栗子。
+Here's a chestnut.
 
-有这么个场景。数据 1/2/3 依次进入 kafka，kafka 会给这三条数据每条分配一个 offset，代表这条数据的序号，我们就假设分配的 offset 依次是 152/153/154。消费者从 kafka 去消费的时候，也是按照这个顺序去消费。假如当消费者消费了 `offset=153` 的这条数据，刚准备去提交 offset 到 zookeeper，此时消费者进程被重启了。那么此时消费过的数据 1/2 的 offset 并没有提交，kafka 也就不知道你已经消费了 `offset=153` 这条数据。那么重启之后，消费者会找 kafka 说，嘿，哥儿们，你给我接着把上次我消费到的那个地方后面的数据继续给我传递过来。由于之前的 offset 没有提交成功，那么数据 1/2 会再次传过来，如果此时消费者没有去重的话，那么就会导致重复消费。
+There's a scene like this. Data 1/2/3 enters Kafka in turn, Kafka will assign an offset to each of the three data, representing the serial number of the data. We assume that the allocated offset is 152/153/154 in turn. When consumers consume from Kafka, they also consume in this order. If the consumer consumes the data with `offset = 153`, and is just about to submit the offset to zookeeper, then the consumer process is restarted. At this time, 1/2 of the offset of the consumed data is not submitted, and Kafka does not know that you have consumed the data `offset = 153`. Then after the restart, the consumer will look for Kafka and say, "Hey, man, you can give me the data of the last place I spent and continue to pass it to me." Since the previous offset was not submitted successfully, 1/2 of the data will be transmitted again. If the consumer does not de duplicate at this time, it will lead to repeated consumption.
 
 ![mq-10](/images/mq-10.png)
 

@@ -6,10 +6,10 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ### [Message queue](/docs/high-concurrency/mq-interview.md)
 - [Why use message queues? What are the advantages and disadvantages of message queues? What are the advantages and disadvantages of KafKa, ActiveMQ, RabbitMQ and RocketMQ?](/docs/high-concurrency/why-mq.md)
 - [How to ensure high abailability of message queues?](/docs/high-concurrency/how-to-ensure-high-availability-of-message-queues.md)
+- [How to ensure that messages are not consumed repeatedly?（how to guarantee the idempotence of message consumption）](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)
 
 ---
 
-- [如何保证消息不被重复消费？（如何保证消息消费的幂等性）](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)
 - [如何保证消息的可靠性传输？（如何处理消息丢失的问题）](/docs/high-concurrency/how-to-ensure-the-reliable-transmission-of-messages.md)
 - [如何保证消息的顺序性？](/docs/high-concurrency/how-to-ensure-the-order-of-messages.md)
 - [如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？](/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
