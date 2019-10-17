@@ -7,20 +7,20 @@ If someone asks about your MQ knowledge, **high avaliability is a must**. [As me
 
 If you are stupid and use an MQ, you have never considered all kinds of problems. The interviewer's felling for you is that you can only some techniques simply, without any thinking, and your impression is not very good at once. If such a student is recruited to be an ordinary younger brother with a salary of less then 20K and a senior engineer with a salary of 20K+, it will be a disaster. Let's design a system. There must be a lot of holes in it. The company will suffer losses in the accident, and the team will back up together.
 
-## 面试题剖析
-这个问题这么问是很好的，因为不能问你 Kafka 的高可用性怎么保证？ActiveMQ 的高可用性怎么保证？一个面试官要是这么问就显得很没水平，人家可能用的就是 RabbitMQ，没用过 Kafka，你上来问人家 Kafka 干什么？这不是摆明了刁难人么。
+## Analysis of interview questions
+It's a good question to ask, because I can't ask you know to guarantee the high availability of Kafka. How to ensure the high availabililty of ActiveMQ? If an interviewer asks like this, it seems that he is not good at it. He may use RabbitMQ instead of Kafka. Why do you come up and ask him Kafka? Isn't that a clear and diffcult one?
 
-所以有水平的面试官，问的是 MQ 的高可用性怎么保证？这样就是你用过哪个 MQ，你就说说你对那个 MQ 的高可用性的理解。
+So a good interviewer asks how to guarantee the high availability of MQ. This is which MQ you have used, and you will talk about your understanding of the high availability of that MQ.
 
-### RabbitMQ 的高可用性
-RabbitMQ 是比较有代表性的，因为是**基于主从**（非分布式）做高可用性的，我们就以 RabbitMQ 为例子讲解第一种 MQ 的高可用性怎么实现。
+### High availiability of RabbitMQ
+RabbitMQ is quite representative, because **does high availability based on master-slave** (non ditributed). Let's take RabbitMQ as an example to explain how to realize the high availability of the frist MQ.
 
-RabbitMQ 有三种模式：单机模式、普通集群模式、镜像集群模式。
+RabbitMQ has three modes: stand-alone mode, general cluster mode and image cluster mode.
 
-#### 单机模式
-单机模式，就是 Demo 级别的，一般就是你本地启动了玩玩儿的😄，没人生产用单机模式。
+#### Stand alone mode
+Stand alone mode, which is demo level, is generally the mode where you start playing locally, and no one uses stand-slone mode for production.
 
-#### 普通集群模式（无高可用性）
+#### Gerneral cluster mode (no high availability)
 普通集群模式，意思就是在多台机器上启动多个 RabbitMQ 实例，每个机器启动一个。你**创建的 queue，只会放在一个 RabbitMQ 实例上**，但是每个实例都同步 queue 的元数据（元数据可以认为是 queue 的一些配置信息，通过元数据，可以找到 queue 所在实例）。你消费的时候，实际上如果连接到了另外一个实例，那么那个实例会从 queue 所在实例上拉取数据过来。
 
 ![mq-7](/images/mq-7.png)
