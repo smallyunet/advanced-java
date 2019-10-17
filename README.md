@@ -5,10 +5,10 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ## High concurrency architecture
 ### [Message queue](/docs/high-concurrency/mq-interview.md)
 - [Why use message queues? What are the advantages and disadvantages of message queues? What are the advantages and disadvantages of KafKa, ActiveMQ, RabbitMQ and RocketMQ?](/docs/high-concurrency/why-mq.md)
+- [How to ensure high abailability of message queues?](/docs/high-concurrency/how-to-ensure-high-availability-of-message-queues.md)
 
 ---
 
-- [如何保证消息队列的高可用？](/docs/high-concurrency/how-to-ensure-high-availability-of-message-queues.md)
 - [如何保证消息不被重复消费？（如何保证消息消费的幂等性）](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)
 - [如何保证消息的可靠性传输？（如何处理消息丢失的问题）](/docs/high-concurrency/how-to-ensure-the-reliable-transmission-of-messages.md)
 - [如何保证消息的顺序性？](/docs/high-concurrency/how-to-ensure-the-order-of-messages.md)
@@ -84,19 +84,19 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [深入 Hystrix 线程池隔离与接口限流](/docs/high-availability/hystrix-thread-pool-current-limiting.md)
 - [基于 timeout 机制为服务接口调用超时提供安全保护](/docs/high-availability/hystrix-timeout.md)
 
-### 高可用系统
-- 如何设计一个高可用系统？
+### High availability system
+- How to design a highly available system?
 
-### 限流
-- 如何限流？在工作中是怎么做的？说一下具体的实现？
+### Current limiting
+- How to limit current? How is it done at work? What's the implementation?
 
-### 熔断
-- 如何进行熔断？
-- 熔断框架都有哪些？具体实现原理知道吗？
+### Fuse
+- How to fuse?
+- What are the fuse frames? Do you know the specific implementation principle?
 - [熔断框架如何做技术选型？选用 Sentinel 还是 Hystrix？](/docs/high-availability/sentinel-vs-hystrix.md)
 
-### 降级
-- 如何进行降级？
+### Downgrade
+- How to downgrade?
 
 ## 微服务架构
 - [微服务架构整个章节内容属额外新增，后续抽空更新，也欢迎读者们参与补充完善](https://github.com/doocs/advanced-java)
@@ -104,12 +104,14 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [从单体式架构迁移到微服务架构](/docs/micro-services/migrating-from-a-monolithic-architecture-to-a-microservices-architecture.md)
 - [微服务的事件驱动数据管理](/docs/micro-services/event-driven-data-management-for-microservices.md)
 
-### Spring Cloud 微服务架构
-- 什么是微服务？微服务之间是如何独立通讯的？
-- Spring Cloud 和 Dubbo 有哪些区别？
-- Spring Boot 和 Spring Cloud，谈谈你对它们的理解？
-- 什么是服务熔断？什么是服务降级？
-- 微服务的优缺点分别是什么？说一下你在项目开发中碰到的坑？
-- 你所知道的微服务技术栈都有哪些？
-- Eureka 和 Zookeeper 都可以提供服务注册与发现的功能，它们有什么区别？
+---
+
+### Spring Cloud Microservice architecture
+- What is a microservice? How do microservices communicate independently?
+- What are the differences between A and B?
+- Spring Boot and Spring Cloud，how do you understand them?
+- What is service fusing? What is service degradation?
+- What are the advantages and disadvantages of microservices? What are the pitfalls you have encountered in project development?
+- What do you know about the microservice technology stack?
+- Eureka and Zookeeper can both provide service registration and discovery. What's the difference between them?
 - ......

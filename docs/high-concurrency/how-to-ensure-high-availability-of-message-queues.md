@@ -1,10 +1,11 @@
-## 面试题
-如何保证消息队列的高可用？
+## Interview questions
+How to ensure high availability of message queues?
 
-## 面试官心理分析
-如果有人问到你 MQ 的知识，**高可用是必问的**。[上一讲](/docs/high-concurrency/why-mq.md)提到，MQ 会导致**系统可用性降低**。所以只要你用了 MQ，接下来问的一些要点肯定就是围绕着 MQ 的那些缺点怎么来解决了。
+## Psychological analysis of interviewers
 
-要是你傻乎乎的就干用了一个 MQ，各种问题从来没考虑过，那你就杯具了，面试官对你的感觉就是，只会简单使用一些技术，没任何思考，马上对你的印象就不太好了。这样的同学招进来要是做个 20k 薪资以内的普通小弟还凑合，要是做薪资 20k+ 的高工，那就惨了，让你设计个系统，里面肯定一堆坑，出了事故公司受损失，团队一起背锅。
+If someone asks about your MQ knowledge, **high avaliability is a must**. [As mentioned above](/docs/high-concurrency/why-mq.md), MQ will lead to **reduced system abailiability**. So as long as you use MQ, some of the key points to be asked next must be how to solve the shortcomings of MQ.
+
+If you are stupid and use an MQ, you have never considered all kinds of problems. The interviewer's felling for you is that you can only some techniques simply, without any thinking, and your impression is not very good at once. If such a student is recruited to be an ordinary younger brother with a salary of less then 20K and a senior engineer with a salary of 20K+, it will be a disaster. Let's design a system. There must be a lot of holes in it. The company will suffer losses in the accident, and the team will back up together.
 
 ## 面试题剖析
 这个问题这么问是很好的，因为不能问你 Kafka 的高可用性怎么保证？ActiveMQ 的高可用性怎么保证？一个面试官要是这么问就显得很没水平，人家可能用的就是 RabbitMQ，没用过 Kafka，你上来问人家 Kafka 干什么？这不是摆明了刁难人么。
