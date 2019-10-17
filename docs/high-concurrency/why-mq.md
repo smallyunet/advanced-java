@@ -100,7 +100,7 @@ MQ should be introduced into general business systems. At first, we used ActiveM
 
 Later, we began to use RabbitMQ, but it is true that Erlang language has prevented a large number of Jave engineers from further studying and controlling it. For the company, it is almost uncontrollable, but it is true that people are open-source, relatively stable support, and highly active.
 
-But now more and more conpanies will use RocketMQ. It's really good. After all, it's made by Ali, bu the community may have the risk of suddenly turning yellow (RocketMQ has bee donated to [Apache](https://github.com/apache/rocketmq), but the activity on GitHub is not high) and they have absolute confudence in their own company's technical strength. RocketMQ is recommended, otherwise they will go back to the old. It's a practical RbbitMQ. People have an active open source community. It's definitely not yellow.
+But now more and more conpanies will use RocketMQ. It's really good. After all, it's made by Alibaba, bu the community may have the risk of suddenly turning yellow (RocketMQ has bee donated to [Apache](https://github.com/apache/rocketmq), but the activity on GitHub is not high) and they have absolute confudence in their own company's technical strength. RocketMQ is recommended, otherwise they will go back to the old. It's a practical RbbitMQ. People have an active open source community. It's definitely not yellow.
 
 So **small and medium-sized companies** have general technical strength and not particularly high technical challenges. RabbitMQ is a good choice; **large companies** have strong infrastructure R & D strength and RocketMQ is a good choice.
 
