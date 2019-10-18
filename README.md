@@ -7,9 +7,6 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [Why use message queues? What are the advantages and disadvantages of message queues? What are the advantages and disadvantages of KafKa, ActiveMQ, RabbitMQ and RocketMQ?](/docs/high-concurrency/why-mq.md)
 - [How to ensure high abailability of message queues?](/docs/high-concurrency/how-to-ensure-high-availability-of-message-queues.md)
 - [How to ensure that messages are not consumed repeatedly?（how to guarantee the idempotence of message consumption）](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)
-
----
-
 - [如何保证消息的可靠性传输？（如何处理消息丢失的问题）](/docs/high-concurrency/how-to-ensure-the-reliable-transmission-of-messages.md)
 - [如何保证消息的顺序性？](/docs/high-concurrency/how-to-ensure-the-order-of-messages.md)
 - [如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？](/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
@@ -98,13 +95,10 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ### Downgrade
 - How to downgrade?
 
-## 微服务架构
-- [微服务架构整个章节内容属额外新增，后续抽空更新，也欢迎读者们参与补充完善](https://github.com/doocs/advanced-java)
-- [关于微服务架构的描述](/docs/micro-services/microservices-introduction.md)
+## Microservice architecture
+- [A description of microservice architecture](/docs/micro-services/microservices-introduction.md)
 - [从单体式架构迁移到微服务架构](/docs/micro-services/migrating-from-a-monolithic-architecture-to-a-microservices-architecture.md)
 - [微服务的事件驱动数据管理](/docs/micro-services/event-driven-data-management-for-microservices.md)
-
----
 
 ### Spring Cloud Microservice architecture
 - What is a microservice? How do microservices communicate independently?
