@@ -69,7 +69,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [集群部署时的分布式 Session 如何实现？](/docs/distributed-system/distributed-session.md)
 
 ## 高可用架构
-- [Hystrix 介绍](/docs/high-availability/hystrix-introduction.md)
+- [Introduction to Hystrix](/docs/high-availability/hystrix-introduction.md)
 - [电商网站详情页系统架构](/docs/high-availability/e-commerce-website-detail-page-architecture.md)
 - [Hystrix 线程池技术实现资源隔离](/docs/high-availability/hystrix-thread-pool-isolation.md)
 - [Hystrix 信号量机制实现资源隔离](/docs/high-availability/hystrix-semphore-isolation.md)

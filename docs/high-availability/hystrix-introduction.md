@@ -1,48 +1,47 @@
-## 用 Hystrix 构建高可用服务架构
-参考 [Hystrix Home](https://github.com/Netflix/Hystrix/wiki#what)。
+## Building highly available service architecture with Hystrix
+Reference resources [Hystrix Home](https://github.com/Netflix/Hystrix/wiki#what)。
 
-### Hystrix 是什么？
-在分布式系统中，每个服务都可能会调用很多其他服务，被调用的那些服务就是**依赖服务**，有的时候某些依赖服务出现故障也是很正常的。
+### What is Hystrix?
+In a distributed system, each service may call many other services. The services that are called are **dependent services**. Sometimes it is normal for some dependent services to fail.
 
-Hystrix 可以让我们在分布式系统中对服务间的调用进行控制，加入一些**调用延迟**或者**依赖故障**的**容错机制**。
+Hystrix allows us to control calls between services in a distributed system, adding some **fault tolerance mechanisms** such as **call delay** or **failure dependent**.
 
-Hystrix 通过将依赖服务进行**资源隔离**，进而阻止某个依赖服务出现故障时在整个系统所有的依赖服务调用中进行蔓延；同时Hystrix 还提供故障时的 fallback 降级机制。
+Hystrix can prevent a dependent service from spreading in all dependent service calls of the whole system when it fails by **Resource isolation** of the dependent service. At the same time, Hystrix also provides a fallback degradation mechanism when it fails.
 
-总而言之，Hystrix 通过这些方法帮助我们提升分布式系统的可用性和稳定性。
+All in all, Hystrix helps us improve the availability and stability of distributed systems through these methods.
 
-### Hystrix 的历史
-Hystrix 是高可用性保障的一个框架。Netflix（可以认为是国外的优酷或者爱奇艺之类的视频网站）的 API 团队从 2011 年开始做一些提升系统可用性和稳定性的工作，Hystrix 就是从那时候开始发展出来的。
+### History of Hystrix
+Hystrix ais a framwork for high availability assurance. The API team of Netflix (which can be regraded as a video website like Youku or iqiyi from abroad) started to do some work to improve the usability and stability of the system in 2011, and Hystrix has developed since then.
 
-在 2012 年的时候，Hystrix 就变得比较成熟和稳定了，Netflix 中，除了 API 团队以外，很多其他的团队都开始使用 Hystrix。
+In 2012, Hystrix became more mature and stable. In Netflix, besides the API team, many other teams began to use Hystrix.
 
-时至今日，Netflix 中每天都有数十亿次的服务间调用，通过 Hystrix 框架在进行，而 Hystrix 也帮助 Netflix 网站提升了整体的可用性和稳定性。
+Today, there are billions of calls between services in Netflix every day, through the hystrix framework, and hystrix also helps Netflix website improve thw overall availability and stability.
 
-[2018 年 11 月，Hystrix 在其 Github 主页宣布，不再开放新功能，推荐开发者使用其他仍然活跃的开源项目](https://github.com/Netflix/Hystrix/blob/master/README.md#hystrix-status)。维护模式的转变绝不意味着 Hystrix 不再有价值。相反，Hystrix 激发了很多伟大的想法和项目，我们高可用的这一块知识还是会针对 Hystrix 进行讲解。
+[In November 2018, hystrix announced on its GitHub homepage that it will no longer open new features and recommend developers to use other open source projects that are still active](https://github.com/Netflix/Hystrix/blob/master/README.md#hystrix-status). The change of maintenance mode does not mean that Hystrix is no longer valuable. On the contrary, Hystrix has inspired many great ideas and projects. Out highly available knowledge will be explained to hystrix.
 
-### Hystrix 的设计原则
-- 对依赖服务调用时出现的调用延迟和调用失败进行**控制和容错保护**。
-- 在复杂的分布式系统中，阻止某一个依赖服务的故障在整个系统中蔓延。比如某一个服务故障了，导致其它服务也跟着故障。
-- 提供 `fail-fast`（快速失败）和快速恢复的支持。
-- 提供 fallback 优雅降级的支持。
-- 支持近实时的监控、报警以及运维操作。
+### Design principles of Hystrix
+- **Control and fault-tolerant protection** for call delay and call failure when calling dependent services.
+- In a complex distributed system, it is necessary to prevent a service dependent fault from spreading in the whole system. For example, if one service fails, other services will also fail.
+- Support for `fail fast` and fast recovery.
+- Provides support for fallback graceful degradation.
+- Support near real-time monitoring, alarm and operation and maintenance operations.
 
 
-举个栗子。
+Here's a chestnut.
 
-有这样一个分布式系统，服务 A 依赖于服务 B，服务 B 依赖于服务 C/D/E。在这样一个成熟的系统内，比如说最多可能只有 100 个线程资源。正常情况下，40 个线程并发调用服务 C，各 30 个线程并发调用 D/E。
+There is a distributed system in which service a depends on service B and service B depends on Service C/D/E. In such a mature system, for example, there may be only 100 thread resources at most. Normally, 40 threads call service C concurrently, and 30 threads call D/E concurrently.
 
-调用服务 C，只需要 20ms，现在因为服务 C 故障了，比如延迟，或者挂了，此时线程会 hang 住 2s 左右。40 个线程全部被卡住，由于请求不断涌入，其它的线程也用来调用服务 C，同样也会被卡住。这样导致服务 B 的线程资源被耗尽，无法接收新的请求，甚至可能因为大量线程不断的运转，导致自己宕机。服务 A 也挂。
+It only takes 20ms to call service C. Now, because Service C fails, such as delay, or hangs, the thread will hang for about 2S. All 40 threads are stuck. Dut to the continuous influx of requests, other threads are also used to call service C. which will also be stuck. In this way, the thread resources of service B are exhausted, unable to receive new requests, and even a large number of therads are running continuously, leading to their own downtime. Service a also hangs up.
 
 ![service-invoke-road](/images/service-invoke-road.png)
 
-Hystrix 可以对其进行资源隔离，比如限制服务 B 只有 40 个线程调用服务 C。当此 40 个线程被 hang 住时，其它 60 个线程依然能正常调用工作。从而确保整个系统不会被拖垮。
+Hystrix can isolate its resources, such as limiting service B to 40 threads calling service C. When the 40 threads are hung, the other 60 threads can still wok normally. So as to ensure that the whole system will not be dragged down.
 
-
-### Hystrix 更加细节的设计原则
-- 阻止任何一个依赖服务耗尽所有的资源，比如 tomcat 中的所有线程资源。
-- 避免请求排队和积压，采用限流和 `fail fast` 来控制故障。
-- 提供 fallback 降级机制来应对故障。
-- 使用资源隔离技术，比如 `bulkhead`（舱壁隔离技术）、`swimlane`（泳道技术）、`circuit breaker`（断路技术）来限制任何一个依赖服务的故障的影响。
-- 通过近实时的统计/监控/报警功能，来提高故障发现的速度。
-- 通过近实时的属性和配置**热修改**功能，来提高故障处理和恢复的速度。
-- 保护依赖服务调用的所有故障情况，而不仅仅只是网络故障情况。
+### More detailed design principles of Hystrix
+- Prevent any dependent service from exhausting all resources, such as all thread resources in Timcat.
+- To avoid request queuing and baking, current limiting and `fail fast` are used to control failures.
+- Provide fallback degradation mechanism to deal with failures.
+- Resource isolation technologies, such as `bulkhead`, `swimlane` and `circuit breaker`, are used to limit the impact of any service dependent failure.
+- Through the near real-time statistical/monitoring/alarm funcation, to improve the speed of fault detection.
+- Improve the speed of fault handling and recovery through near real-time attribute and configuration **hot modeification** function.
+- Protect all failures that depend on service calls, not just network failures.
