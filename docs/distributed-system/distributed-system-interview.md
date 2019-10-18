@@ -1,30 +1,30 @@
-## 分布式系统面试连环炮
-有一些同学，之前呢主要是做传统行业，或者外包项目，一直是在那种小的公司，技术一直都搞的比较简单。他们有共同的一个问题，就是都没怎么搞过分布式系统，现在互联网公司，一般都是做分布式的系统，大家都不是做底层的分布式系统、分布式存储系统 hadoop hdfs、分布式计算系统 hadoop mapreduce / spark、分布式流式计算系统 storm。
+## Distributed system interview cannon
+Some students, before that, mainly engaged in traditional industries or outsourcing projects, have always been in small companies with relatibely simple technology. They have a common problem, that is, they haven't done a lot of distributed systems. Nowadays, Internet companies generally do distributed systems. They don't do the underlying distributed system, distributed storage system Hadoop HDFS, distributed computing system Hadoop MapReduce/Spark, and distributed straming computing system storm.
 
-分布式业务系统，就是把原来用 Java 开发的一个大块系统，给拆分成**多个子系统**，多个子系统之间互相调用，形成一个大系统的整体。假设原来你做了一个 OA 系统，里面包含了权限模块、员工模块、请假模块、财务模块，一个工程，里面包含了一堆模块，模块与模块之间会互相去调用，1 台机器部署。现在如果你把这个系统给拆开，权限系统、员工系统、请假系统、财务系统 4 个系统，4 个工程，分别在 4 台机器上部署。一个请求过来，完成这个请求，这个员工系统，调用权限系统，调用请假系统，调用财务系统，4 个系统分别完成了一部分的事情，最后 4 个系统都干完了以后，才认为是这个请求已经完成了。
+Distributed business system is to divide a large system originally developed in Java into **multiple sub-systems**. Multiple sub-systems call each other to form a large system as a while. Suppose you have made an OA system, which contains permission module, employee module, leave module, financial module, and a project, which contains a bunch of modules, which will call each other and deploy one machine. Now, if you take this system apart, there are four systems: permission system, employee system, leave system and financial system, four projects, which are deployed on four machines respectively. When a request is completed, the employee system, the permission system, the leave system and the financial system are called. The four systems have completed part of the work respectibely. After the last four systems have completed the work, the request is considered to have been completed.
 
 ![simple-distributed-system-oa](/images/simple-distributed-system-oa.png)
 
-> 近几年开始兴起和流行 Spring Cloud，刚流行，还没开始普及，目前普及的是 dubbo，因此这里也主要讲 dubbo。
+> Spring cloud has been rising and popular in recent years. It's just popular, but it hasn't been popularized yet. At present, Dubbo is popularized, so here we mainly talk about Dubbo.
 
-面试官可能会问你以下问题。
-### 为什么要进行系统拆分？
-- 为什么要进行系统拆分？如何进行系统拆分？拆分后不用dubbo可以吗？dubbo和thrift有什么区别呢？
-### 分布式服务框架
-- 说一下的 dubbo 的工作原理？注册中心挂了可以继续通信吗？
-- dubbo 支持哪些序列化协议？说一下 hessian 的数据结构？PB 知道吗？为什么 PB 的效率是最高的？
-- dubbo 负载均衡策略和高可用策略都有哪些？动态代理策略呢？
-- dubbo 的 spi 思想是什么？
-- 如何基于 dubbo 进行服务治理、服务降级、失败重试以及超时重试？
-- 分布式服务接口的幂等性如何设计（比如不能重复扣款）？
-- 分布式服务接口请求的顺序性如何保证？
-- 如何自己设计一个类似 dubbo 的 rpc 框架？
+The interviewer may ask you the following questions.
+### Why split the system?
+- Why split the system? How to split the system? Can I split it without Dubbo? What's the difference between Dubbo and Thrift?
+### Distributed service framework
+- How does Dubbo work? Can I continue to communicate if the registration center is hung up?
+- What serialization protocols does Dubbo support? What about Hessian's data structure? Does PB know? Why is PB the most efficient?
+- What are the Dubbo load balancing strategies and high availability strategies? What about dynamic agent strategy?
+- What si Dubbo's SPI thought?
+- How to manage, demote, retry and timeout based on Dubbo?
+- How to design the idempotence of distributed service interface (such as not repeated deduction)?
+- How to ensure the order of distributed service interface requests?
+- Hwo to design a Dubbo like RPC framework?
 
-### 分布式锁
-- 使用 redis 如何设计分布式锁？使用 zk 来设计分布式锁可以吗？这两种分布式锁的实现方式哪种效率比较高？
+### Distributed lock
+- How to design distributed locks with redis? Can we use ZK to design distributed locks? Which is the most efficient way to implement there two distributed locks?
 
-### 分布式事务
-- 分布式事务了解吗？你们如何解决分布式事务问题的？TCC 如果出现网络连不通怎么办？XA 的一致性如何保证？
+### Distributed transaction
+- Do you understand distributed transactions? How do you solve the problem of distributed transaction? What should TCC do if the network fails to connect? How to ensure the consistency of XA?
 
-### 分布式会话
-- 集群部署时的分布式 session 如何实现？
+### Distributed session
+- How to implement distributed seesion in cluster deployment?
