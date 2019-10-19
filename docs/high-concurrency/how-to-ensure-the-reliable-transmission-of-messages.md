@@ -1,60 +1,61 @@
-## 面试题
-如何保证消息的可靠性传输？或者说，如何处理消息丢失的问题？
+## Interview questions
+How to ensure the reliable transmission of messages? Or, how to deal with the problem of message loss?
 
-## 面试官心理分析
-这个是肯定的，用 MQ 有个基本原则，就是**数据不能多一条，也不能少一条**，不能多，就是前面说的[重复消费和幂等性问题](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)。不能少，就是说这数据别搞丢了。那这个问题你必须得考虑一下。
+## Psychological analysis of interviewers
+This is for sure. With MQ, there is a bisic principle, that is, there should be **no more data, no less data**, no more data, which is the above-mentioned [repeated consumption and idempotency issues](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md). It can't be less, that is to say, don't lose the data. Then you have to think about it.
 
-如果说你这个是用 MQ 来传递非常核心的消息，比如说计费、扣费的一些消息，那必须确保这个 MQ 传递过程中**绝对不会把计费消息给弄丢**。
+If you use MQ to deliber very core messages, such as biling and fee deduction messages, you must ensure that **will never lose the billing messages** in the process of MQ delivery.
 
-## 面试题剖析
-数据的丢失问题，可能出现在生产者、MQ、消费者中，咱们从 RabbitMQ 和 Kafka 分别来分析一下吧。
+## Analysis of interview questions
+Data loss may occur in producers, MQ and consumers. Let's analyze it from RabbitMQ and Kafka respectively.
 
 ### RabbitMQ
 ![rabbitmq-message-lose](/images/rabbitmq-message-lose.png)
 
-#### 生产者弄丢了数据
+#### Producer lost data
 
-生产者将数据发送到 RabbitMQ 的时候，可能数据就在半路给搞丢了，因为网络问题啥的，都有可能。
+When the prooducer sends the data to RabbitMQ, the data may be lost in the middle of the way, because network problems and so on are possible.
 
-此时可以选择用 RabbitMQ 提供的事务功能，就是生产者**发送数据之前**开启 RabbitMQ 事务`channel.txSelect`，然后发送消息，如果消息没有成功被 RabbitMQ 接收到，那么生产者会收到异常报错，此时就可以回滚事务`channel.txRollback`，然后重试发送消息；如果收到了消息，那么可以提交事务`channel.txCommit`。
+At this time, you can choose to use the transaction function provided by RabbitMQ, that is, before the producer **sends the data** starts the RabbitMQ transaction `channel.txSelect`, and then sends the message. If the message is no successfully received by RabbitMQ, the producer will receive ana exception message. At this time, you can roll back the transaction `channel.txrollback`, and then try sending the message again. If the message is received, then Can commit transaction `channel.txcommit`.
+
 ```java
-// 开启事务
+// Open transaction
 channel.txSelect
 try {
-    // 这里发送消息
+    // Send message here
 } catch (Exception e) {
     channel.txRollback
 
-    // 这里再次重发这条消息
+    // Here's the message again
 }
 
-// 提交事务
+// Submission of affairs
 channel.txCommit
 ```
 
-但是问题是，RabbitMQ 事务机制（同步）一搞，基本上**吞吐量会下来，因为太耗性能**。
+But the problem is that when the RabbitMQ, transaction mechanism (synchronization) is implemented, the **throughput will be reduced basically because it consumers too much performance**.
 
-所以一般来说，如果你要确保说写 RabbitMQ 的消息别丢，可以开启 `confirm` 模式，在生产者那里设置开启 `confirm` 模式之后，你每次写的消息都会分配一个唯一的 id，然后如果写入了 RabbitMQ 中，RabbitMQ 会给你回传一个 `ack` 消息，告诉你说这个消息 ok 了。如果 RabbitMQ 没能处理这个消息，会回调你的一个 `nack` 接口，告诉你这个消息接收失败，你可以重试。而且你可以结合这个机制自己在内存里维护每个消息 id 的状态，如果超过一定时间还没接收到这个消息的回调，那么你可以重发。
+So generally speaking, if you want to make sure that the message written to RabbitMQ is not lost, you can turn on the `confirm` mode. After setting the `confirm` mode to the producer, eahc mesage you write will the assigned a unique ID. Then if you write it to RabbitMQ, RabbitMQ willsend you an `ACK` message and tell you that the message is OK. If RabbitMQ fails to process the message, it will call back one of your `NACK` interfaces and tell you that the message has failed to receive. You can try again. And you can use this mechanism to maintain the status of each message ID in memeory. If you haven't received the callback of this message ofr a certain time, you can resend it.
 
-事务机制和 `confirm` 机制最大的不同在于，**事务机制是同步的**，你提交一个事务之后会**阻塞**在那儿，但是 `confirm` 机制是**异步**的，你发送个消息之后就可以发送下一个消息，然后那个消息 RabbitMQ 接收了之后会异步回调你的一个接口通知你这个消息接收到了。
+The biggest difference between the transaction mechanism and the `confirm` mechanism is that the **transaction mechanism is synchronous**. After you submit a transaction, you will **block** there, but the `confirm` mechanism is **asynchronous**. After you send a message, you can send the next message, and then RabbitMQ will asychronously callback your interface to inform you that the message has been received.
 
-所以一般在生产者这块**避免数据丢失**，都是用 `confirm` 机制的。
+Therefore, in general, the **confirm mechansim** is used to avoid data loss in the producer segment.
 
-#### RabbitMQ 弄丢了数据
-就是 RabbitMQ 自己弄丢了数据，这个你必须**开启 RabbitMQ 的持久化**，就是消息写入之后会持久化到磁盘，哪怕是 RabbitMQ 自己挂了，**恢复之后会自动读取之前存储的数据**，一般数据不会丢。除非极其罕见的是，RabbitMQ 还没持久化，自己就挂了，**可能导致少量数据丢失**，但是这个概率较小。
+#### RabbitMQ lost data
+It means that RabbitMQ lost its own data, you must **enable the persistence** of RabbitMQ, which means that the message will be persisted to disk after being written. Even if RabbitMQ hangs up, the **data stored before will be read automatically after recovery** and general data will not be lost. Unless it is extremely rare that RabbitMQ has not been persisted, it will hang up on its own, and **may cause a small amount of data loss**, but the probability is small.
 
-设置持久化有**两个步骤**：
+There are **two steps to set persistence**:
 
-- 创建 queue 的时候将其设置为持久化<br>
-这样就可以保证 RabbitMQ 持久化 queue 的元数据，但是它是不会持久化 queue 里的数据的。
-- 第二个是发送消息的时候将消息的 `deliveryMode` 设置为 2<br>
-就是将消息设置为持久化的，此时 RabbitMQ 就会将消息持久化到磁盘上去。
+- When creating a queue, set it to persisten.
+This ensures that RabbitMQ till persist the metadata of the queue, but it will not persist the data in the queue.
+- The second is to set the `deliverymode` of the message to 2 when sending a message.
+In the case, RabbitMQ will persist the message to disk.
 
-必须要同时设置这两个持久化才行，RabbitMQ 哪怕是挂了，再次重启，也会从磁盘上重启恢复 queue，恢复这个 queue 里的数据。
+These two persistence settings must be set at the same time. Even it RabbitMQ is hung and restarted again, it will restart the recovery queue from the disk and recover the data in the queue.
 
-注意，哪怕是你给 RabbitMQ 开启了持久化机制，也有一种可能，就是这个消息写到了 RabbitMQ 中，但是还没来得及持久化到磁盘上，结果不巧，此时 RabbitMQ 挂了，就会导致内存里的一点点数据丢失。
+Note that even if you have enabled the persistence mechanism for RabbitMQ, there is a possibility that this message has been written to RabbitMQ, but it has not yet been persisted to the disk. Unfortunately, when RabbitMQ hangs up, a little bit of data in the memory will be lost.
 
-所以，持久化可以跟生产者那边的 `confirm` 机制配合起来，只有消息被持久化到磁盘之后，才会通知生产者 `ack` 了，所以哪怕是在持久化到磁盘之前，RabbitMQ 挂了，数据丢了，生产者收不到 `ack`，你也是可以自己重发的。
+Therefore, persistence can be combined with the `confirm` mechanism of the producer. Only after the message is persisted to the disk will the producer be notified of `ACK`. So even before the message is persisted to the disk, RabbitMQ hangs, the data is lost, and the producer cannot receive `ACK`. You can resend it yourself.
 
 #### 消费端弄丢了数据
 RabbitMQ 如果丢失了数据，主要是因为你消费的时候，**刚消费到，还没处理，结果进程挂了**，比如重启了，那么就尴尬了，RabbitMQ 认为你都消费了，这数据就丢了。
