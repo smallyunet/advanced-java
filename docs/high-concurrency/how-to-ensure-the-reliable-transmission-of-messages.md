@@ -57,36 +57,48 @@ Note that even if you have enabled the persistence mechanism for RabbitMQ, there
 
 Therefore, persistence can be combined with the `confirm` mechanism of the producer. Only after the message is persisted to the disk will the producer be notified of `ACK`. So even before the message is persisted to the disk, RabbitMQ hangs, the data is lost, and the producer cannot receive `ACK`. You can resend it yourself.
 
-#### 消费端弄丢了数据
-RabbitMQ 如果丢失了数据，主要是因为你消费的时候，**刚消费到，还没处理，结果进程挂了**，比如重启了，那么就尴尬了，RabbitMQ 认为你都消费了，这数据就丢了。
+#### Consumer lost data
+If RabbitMQ loses data, it's mainly because when you consume, the **process is suspended after it's just consumed, for example, it's embarrassing to restart. RabbitMQ thinks that you consume all the data, and the data is lost.
 
-这个时候得用 RabbitMQ 提供的 `ack` 机制，简单来说，就是你必须关闭 RabbitMQ 的自动 `ack`，可以通过一个 api 来调用就行，然后每次你自己代码里确保处理完的时候，再在程序里 `ack` 一把。这样的话，如果你还没处理完，不就没有 `ack` 了？那 RabbitMQ 就认为你还没处理完，这个时候 RabbitMQ 会把这个消费分配给别的 consumer 去处理，消息是不会丢的。
+At this time, you need to use the `ACK` mechanism provided by RabbitMQ. In short, you must turn off the sutomatic `ACK` of RabbitMQ, which can be called through an API, and then `ACK` in the program every time you make sure that your code finishes processing. In this case, if you haven't finished processing, there will be no `ACK`? Then RabbitMQ thinks you haven't finished processing. At this time, RabbitMQ will allocate this consumption to other consumers to process, and the message will not lost.
 
 ![rabbitmq-message-lose-solution](/images/rabbitmq-message-lose-solution.png)
 
 ### Kafka
 
-#### 消费端弄丢了数据
+#### Consumer lost data
 唯一可能导致消费者弄丢数据的情况，就是说，你消费到了这个消息，然后消费者那边**自动提交了 offset**，让 Kafka 以为你已经消费好了这个消息，但其实你才刚准备处理这个消息，你还没处理，你自己就挂了，此时这条消息就丢咯。
 
-这不是跟 RabbitMQ 差不多吗，大家都知道 Kafka 会自动提交 offset，那么只要**关闭自动提交** offset，在处理完之后自己手动提交 offset，就可以保证数据不会丢。但是此时确实还是**可能会有重复消费**，比如你刚处理完，还没提交 offset，结果自己挂了，此时肯定会重复消费一次，自己保证幂等性就好了。
+The only situation that may cause the consumer to lose data is that you consume the message, and then the consumer **automatically submits the offset** to Kafka to make him think that you have consumed the message, but in fact, you are just about to process the message. You have not yet processed it, and you hang up. At this time, the message will be lost.
 
-生产环境碰到的一个问题，就是说我们的 Kafka 消费者消费到了数据之后是写到一个内存的 queue 里先缓冲一下，结果有的时候，你刚把消息写入内存 queue，然后消费者会自动提交 offset。然后此时我们重启了系统，就会导致内存 queue 里还没来得及处理的数据就丢失了。
+One of the problems encountered in the production environment is that our Kafka consumer writes the data to a memory queue and buffers it first. As a result, sometimes you just write the message to the memory queue, and then the consumer will automatically submit the offset. Then we restart the system at this time, which will result in the loss of data in the memory queue that has not yet been processed.
 
-#### Kafka 弄丢了数据
+#### Kafka lost data
 
-这块比较常见的一个场景，就是 Kafka 某个 broker 宕机，然后重新选举 partition 的 leader。大家想想，要是此时其他的 follower 刚好还有些数据没有同步，结果此时 leader 挂了，然后选举某个 follower 成 leader 之后，不就少了一些数据？这就丢了一些数据啊。
+A common scenario in this case is that a broker in Kafka goes down and re elects the leader of the parition. Let's think about it. If other followers happen to have some data that is not synchronized at this time, and the leader hangs up, then after a foolower is elected as a leader, there will be some data missing. That's missing some data.
 
-生产环境也遇到过，我们也是，之前 Kafka 的 leader 机器宕机了，将 follower 切换为 leader 之后，就会发现说这个数据就丢了。
+The production environment has also encountered. We also encountered that the leader machine of Kafka was down before. After switching the follower to the leader, we will find that the data is lost.
 
-所以此时一般是要求起码设置如下 4 个参数：
+Therefore, it is fenerally required to set at least four parameters as follows:
 
-- 给 topic 设置 `replication.factor` 参数：这个值必须大于 1，要求每个 partition 必须有至少 2 个副本。
-- 在 Kafka 服务端设置 `min.insync.replicas` 参数：这个值必须大于 1，这个是要求一个 leader 至少感知到有至少一个 follower 还跟自己保持联系，没掉队，这样才能确保 leader 挂了还有一个 follower 吧。
-- 在 producer 端设置 `acks=all`：这个是要求每条数据，必须是**写入所有 replica 之后，才能认为是写成功了**。
-- 在 producer 端设置 `retries=MAX`（很大很大很大的一个值，无限次重试的意思）：这个是**要求一旦写入失败，就无限重试**，卡在这里了。
+- Set the `replication.factor` parameter to topicL this value must be greater then 1. Each partition must have at least 2 copies.
+- Set the `min.insync.replicas` parameter on Kafka server: the value must be greater than 1. This requires a leader to sense that at least one follower still keeps in touch with itself and does not fall behind, so as to ensure that the leader has another follower.
+- Set `acks=all` on the produce side: This requires that each data must be **written to all replicas before it can be considered as a successful**.
+- Set `retries=max` on the producer side (a very large value, meaning umlimited retries): This is **request unlimited retries in case of write failure**, the card is here.
 
-我们生产环境就是按照上述要求配置的，这样配置之后，至少在 Kafka broker 端就可以保证在 leader 所在 broker 发生故障，进行 leader 切换时，数据不会丢失。
+Out production environment is configured according to the above requirements. After this configuration, at least at the Kafka broker end, we can ensure that when the broker where the leader is located fails, and when the leader is switched, the data will not be lost.
 
-#### 生产者会不会弄丢数据？
-如果按照上述的思路设置了 `acks=all`，一定不会丢，要求是，你的 leader 接收到消息，所有的 follower 都同步到了消息之后，才认为本次写成功了。如果没满足这个条件，生产者会自动不断的重试，重试无限次。
+#### Will producers lose data?
+If `acks=all` is set according to the above idea, it will not be lost. The requirement is that after your leader receives the message and all the followers synchronize to the message, it is considered that this write is successful. If this condition is not met, the producer will automatically try again and again for umlimited times.
+
+
+
+
+
+
+
+
+
+
+
+
