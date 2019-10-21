@@ -1,25 +1,25 @@
-## 面试题
-如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？
+## Interview questions
+How to solve the problem of message queue delay and expiration? What should I do when the message queue is full? There are millions of messages standing in the backlog for several hours. How to solve it?
 
-## 面试官心理分析
-你看这问法，其实本质针对的场景，都是说，可能你的消费端出了问题，不消费了；或者消费的速度极其慢。接着就坑爹了，可能你的消息队列集群的磁盘都快写满了，都没人消费，这个时候怎么办？或者是这整个就积压了几个小时，你这个时候怎么办？或者是你积压的时间太长了，导致比如 RabbitMQ 设置了消息过期时间后就没了怎么办？
+## Psynological analysis of interviewers
+In fact, the essence of the question is to say that there may be something wrong with your consumption end and you will not consume; or the consumption speed is extremely slow. Then it's a problem. Maybe the disk of your message queue cluster is almost full and nobody is consuming it. What should I do at this time? Or the whole thing has been overstocked for serveral hours. What do you do at this time? Or you have a long backlog, so for example, RabbitMQ has set the message expiration time and then it doesn't work.
 
-所以就这事儿，其实线上挺常见的，一般不出，一出就是大 case。一般常见于，举个例子，消费端每次消费之后要写 mysql，结果 mysql 挂了，消费端 hang 那儿了，不动了；或者是消费端出了个什么岔子，导致消费速度极其慢。
+So in this case, in fact, it's quite common online. It's usually not available. One is a big case. Generally, for example, the consumer needs to write MySQL after each consumption. As a result, MySQL hangs up and the consumer hangs there. It doesn't move. Or something goes wrong with the consumer, which causes the consumption speed to be extremely slow.
 
-## 面试题剖析
-关于这个事儿，我们一个一个来梳理吧，先假设一个场景，我们现在消费端出故障了，然后大量消息在 mq 里积压，现在出事故了，慌了。
+## Analysis of interview questions
+About this matter, let's sort it out one by one. Let's assume a scenario. Now we have a consumer failure, and then a large number or messages are backing in MQ. Now there are accidents and panic.
 
-### 大量消息在 mq 里积压了几个小时了还没解决
-几千万条数据在 MQ 里积压了七八个小时，从下午 4 点多，积压到了晚上 11 点多。这个是我们真实遇到过的一个场景，确实是线上故障了，这个时候要不然就是修复 consumer 的问题，让它恢复消费速度，然后傻傻的等待几个小时消费完毕。这个肯定不能在面试的时候说吧。
+### A large number of messages have been backlog in MQ for serveral hours
+Tens of millions of pieces of data have been backlog in MQ for seven or eight hours, from more than 4 p.m. to more than 11 p.m. This is a real scene we have encountered. It's really an online failure. At this time, otherwise, it's to fix the problem of consumer, let it recover the consumption speed, and then wait for a few hours for the consumption to be completed. This can't be said in the interview.
 
-一个消费者一秒是 1000 条，一秒 3 个消费者是 3000 条，一分钟就是 18 万条。所以如果你积压了几百万到上千万的数据，即使消费者恢复了，也需要大概 1 小时的时间才能恢复过来。
+One conumer per second is 1000, three consumers per second is 3000, and one minute is 180000. So if you have a backing of millions to tens of millons of data, even if the consumer recovers, it will take about an hour to recover.
 
-一般这个时候，只能临时紧急扩容了，具体操作步骤和思路如下：
-- 先修复 consumer 的问题，确保其恢复消费速度，然后将现有 consumer 都停掉。
-- 新建一个 topic，partition 是原来的 10 倍，临时建立好原先 10 倍的 queue 数量。
-- 然后写一个临时的分发数据的 consumer 程序，这个程序部署上去消费积压的数据，**消费之后不做耗时的处理**，直接均匀轮询写入临时建立好的 10 倍数量的 queue。
-- 接着临时征用 10 倍的机器来部署 consumer，每一批 consumer 消费一个临时 queue 的数据。这种做法相当于是临时将 queue 资源和 consumer 资源扩大 10 倍，以正常的 10 倍速度来消费数据。
-- 等快速消费完积压数据之后，**得恢复原先部署的架构**，**重新**用原先的 consumer 机器来消费消息。
+At this time, the capacity can only be expanded temporarily. The specific operation steps and ideas are as follows:
+- Fix the problem of the consumer first, make sure it recovers the consumption speed, and then stop all the existing consumers.
+- Create a new topic, partition is 10 times of the original, and temporarily establish the original 10 times of the number of queues.
+- Then write a temporary consumer program to distribute data. This program is deployed to consume the backlog data. After **consumption, do not do time-consuming processing**, directly and evenly poll and write the temporarily established 10 times number of queues.
+- Then temporarily requistion 10 times of machines to deploy consumers, and each batch of consumers consumes a temporary queue of data. This is equivalent to temporarily expanding the queue resources and consumer resources by 10 times, and consuming data at a normal speed of 10 times.
+- After the fast consumption of the backlog data, **needs to restore the previously deployed architecture**, and **re** uses the original consumer machine to consume messages.
 
 ### mq 中的消息过期失效了
 假设你用的是 RabbitMQ，RabbtiMQ 是可以设置过期时间的，也就是 TTL。如果消息在 queue 中积压超过一定的时间就会被 RabbitMQ 给清理掉，这个数据就没了。那这就是第二个坑了。这就不是说数据会大量积压在 mq 里，而是**大量的数据会直接搞丢**。

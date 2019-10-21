@@ -9,7 +9,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [How to ensure that messages are not consumed repeatedly?（how to guarantee the idempotence of message consumption）](/docs/high-concurrency/how-to-ensure-that-messages-are-not-repeatedly-consumed.md)
 - [Hwo to ensure the reliable transmission of messages? (How to deal with message loss?)](/docs/high-concurrency/how-to-ensure-the-reliable-transmission-of-messages.md)
 - [How to ensure the order of messages?](/docs/high-concurrency/how-to-ensure-the-order-of-messages.md)
-- [如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？](/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
+- [How to solve the problem of message queue delay and expiration? What should I do when the message queue is full? There are millions of messages standing in the backlog for several hours. How to solve it?](/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
 - [如果让你写一个消息队列，该如何进行架构设计啊？说一下你的思路。](/docs/high-concurrency/mq-design.md)
 
 ### [搜索引擎](/docs/high-concurrency/es-introduction.md)
