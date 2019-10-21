@@ -1,11 +1,11 @@
-## 面试题
-如何保证消息的顺序性？
+## Interview questions
+How to ensure the order of messages?
 
-## 面试官心理分析
-其实这个也是用 MQ 的时候必问的话题，第一看看你了不了解顺序这个事儿？第二看看你有没有办法保证消息是有顺序的？这是生产系统中常见的问题。
+## Psychological analysis of interviewers
+In fact, this is also a topic that must be asked when using MQ. First, do you know the order? Second, do you have any way to ensure that the messages are in order? This is a common problem in production system.
 
-## 面试题剖析
-我举个例子，我们以前做过一个 mysql `binlog` 同步的系统，压力还是非常大的，日同步数据要达到上亿，就是说数据从一个 mysql 库原封不动地同步到另一个 mysql 库里面去（mysql -> mysql）。常见的一点在于说比如大数据 team，就需要同步一个 mysql 库过来，对公司的业务系统的数据做各种复杂的操作。
+## Analysis of interview quesions
+For example, we have done a MySQL `binlog` ysnchronization system before, but the pressure is still bery great. The daily synchronization data should reach up to 100 million, that is to say, the data is synchronized from one MySQL database to another intact (MySQL -> MySQL). A common point is that for example, a big data tem needs to synchronize a MySQL database to perform various complex operations on the company's business system data.
 
 你在 mysql 里增删改一条数据，对应出来了增删改 3 条 `binlog` 日志，接着这三条 `binlog` 发送到 MQ 里面，再消费出来依次执行，起码得保证人家是按照顺序来的吧？不然本来是：增加、修改、删除；你楞是换了顺序给执行成删除、修改、增加，不全错了么。
 
