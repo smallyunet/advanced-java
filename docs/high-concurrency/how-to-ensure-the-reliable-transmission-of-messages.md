@@ -67,7 +67,6 @@ At this time, you need to use the `ACK` mechanism provided by RabbitMQ. In short
 ### Kafka
 
 #### Consumer lost data
-唯一可能导致消费者弄丢数据的情况，就是说，你消费到了这个消息，然后消费者那边**自动提交了 offset**，让 Kafka 以为你已经消费好了这个消息，但其实你才刚准备处理这个消息，你还没处理，你自己就挂了，此时这条消息就丢咯。
 
 The only situation that may cause the consumer to lose data is that you consume the message, and then the consumer **automatically submits the offset** to Kafka to make him think that you have consumed the message, but in fact, you are just about to process the message. You have not yet processed it, and you hang up. At this time, the message will be lost.
 
