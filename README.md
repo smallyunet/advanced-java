@@ -10,7 +10,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [Hwo to ensure the reliable transmission of messages? (How to deal with message loss?)](/docs/high-concurrency/how-to-ensure-the-reliable-transmission-of-messages.md)
 - [How to ensure the order of messages?](/docs/high-concurrency/how-to-ensure-the-order-of-messages.md)
 - [How to solve the problem of message queue delay and expiration? What should I do when the message queue is full? There are millions of messages standing in the backlog for several hours. How to solve it?](/docs/high-concurrency/mq-time-delay-and-expired-failure.md)
-- [如果让你写一个消息队列，该如何进行架构设计啊？说一下你的思路。](/docs/high-concurrency/mq-design.md)
+- [If you are asked to write a message queue, how to design the architecture? Say what you think.](/docs/high-concurrency/mq-design.md)
 
 ### [搜索引擎](/docs/high-concurrency/es-introduction.md)
 - [es 的分布式架构原理能说一下么（es 是如何实现分布式的啊）？](/docs/high-concurrency/es-architecture.md)

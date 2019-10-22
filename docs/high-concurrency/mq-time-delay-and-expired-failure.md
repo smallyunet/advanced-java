@@ -21,12 +21,12 @@ At this time, the capacity can only be expanded temporarily. The specific operat
 - Then temporarily requistion 10 times of machines to deploy consumers, and each batch of consumers consumes a temporary queue of data. This is equivalent to temporarily expanding the queue resources and consumer resources by 10 times, and consuming data at a normal speed of 10 times.
 - After the fast consumption of the backlog data, **needs to restore the previously deployed architecture**, and **re** uses the original consumer machine to consume messages.
 
-### mq 中的消息过期失效了
-假设你用的是 RabbitMQ，RabbtiMQ 是可以设置过期时间的，也就是 TTL。如果消息在 queue 中积压超过一定的时间就会被 RabbitMQ 给清理掉，这个数据就没了。那这就是第二个坑了。这就不是说数据会大量积压在 mq 里，而是**大量的数据会直接搞丢**。
+### Message in MQ expired
+Suppose you use RabbitMQ, which can set the expiration time, that is TTL. If the message backlog in the queue exceeds a certain time, it will be cleared by RabbitMQ, and the data will be lost. Then this is the second pit. This is not to say that a large amount of data will be overstocked in MQ, but **a large amount of data will be directly lost**.
 
-这个情况下，就不是说要增加 consumer 消费积压的消息，因为实际上没啥积压，而是丢了大量的消息。我们可以采取一个方案，就是**批量重导**，这个我们之前线上也有类似的场景干过。就是大量积压的时候，我们当时就直接丢弃数据了，然后等过了高峰期以后，比如大家一起喝咖啡熬夜到晚上12点以后，用户都睡觉了。这个时候我们就开始写程序，将丢失的那批数据，写个临时程序，一点一点的查出来，然后重新灌入 mq 里面去，把白天丢的数据给他补回来。也只能是这样了。
+In this case, it doesn't mean to increase the message backlog of consumer consumption, because there is no backlog in fact, but a large number of messages are lost. We can take a plan, that is mass retransmission. We have done similar things on the front line. When there is a large backlog, we discard the data directly, and then after the peak period, for example, when everyone drinks coffee and stays up late until 12 p.m., users go to bed. At this time, we will start to write a program, write a temporary program to find out the lost data bit by bit, and then refill the MQ to make up for the data lost in the daytime. This is the only way.
 
-假设 1 万个订单积压在 mq 里面，没有处理，其中 1000 个订单都丢了，你只能手动写程序把那 1000 个订单给查出来，手动发到 mq 里去再补一次。
+Suppose 10000 orders are backlog in MQ and have not been processed, and 1000 of them have been lost. You can only manually write a program to find out the 1000 orders and manually send them to MQ to make up again.
 
-### mq 都快写满了
-如果消息积压在 mq 里，你很长时间都没有处理掉，此时导致 mq 都快写满了，咋办？这个还有别的办法吗？没有，谁让你第一个方案执行的太慢了，你临时写程序，接入数据来消费，**消费一个丢弃一个，都不要了**，快速消费掉所有的消息。然后走第二个方案，到了晚上再补数据吧。
+### MQ is almost full
+If the message is stuck in MQ and you haven't dealt with it for a long time, then the MQ is almost full, what shoud you do? Is there any other way to do this? No, who asked you to slow down the implementation of the first scheme? You write programs temporarily, access data to consume, **consume one, discard one, and do not**, and consume all messages quickly. Then go to the second plan, and fill in the data in the evening.
