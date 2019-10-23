@@ -37,8 +37,8 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [如何设计可以动态扩容缩容的分库分表方案？](/docs/high-concurrency/database-shard-dynamic-expand.md)
 - [分库分表之后，id 主键如何处理？](/docs/high-concurrency/database-shard-global-id-generate.md)
 
-### 读写分离
-- [如何实现 MySQL 的读写分离？MySQL 主从复制原理是啥？如何解决 MySQL 主从同步的延时问题？](/docs/high-concurrency/mysql-read-write-separation.md)
+### Read/write separation
+- [How to realize the read-write separation of MySQL? What is the principle of MySQL master0slave replication? How to solve the dalay problem of MySQL master-slave synchronization?](/docs/high-concurrency/mysql-read-write-separation.md)
 
 ### 高并发系统
 - [如何设计一个高并发系统？](/docs/high-concurrency/high-concurrency-design.md)
