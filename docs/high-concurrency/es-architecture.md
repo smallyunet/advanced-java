@@ -1,46 +1,46 @@
-## 面试题
-es 的分布式架构原理能说一下么（es 是如何实现分布式的啊）？
+## Interview questions
+Can you explain the principle of distributed archtecture of ES?
 
-## 面试官心理分析
-在搜索这块，lucene 是最流行的搜索库。几年前业内一般都问，你了解 lucene 吗？你知道倒排索引的原理吗？现在早已经 out 了，因为现在很多项目都是直接用基于 lucene 的分布式搜索引擎—— ElasticSearch，简称为 es。
+## Psychological analysis of interviewers
+In search, Lucene is the most popular search library. A few years ago, the industry generally asked, do you know Lucene? Do you know the principle of inverted index? Now it has been out for a long time, because now many projects directly use the Luncene based distributed search engine, ElasticSearch, or ES for short.
 
-而现在分布式搜索基本已经成为大部分互联网行业的 Java 系统的标配，其中尤为流行的就是 es，前几年 es 没火的时候，大家一般用 solr。但是这两年基本大部分企业和项目都开始转向 es 了。
+Now distrubuted search has basically become the standard configuration of Java System in most Internet industries, especially the popular one is ES. In the post few years, when ES was not popualr, people generally used Solr. But in the past two years, most enterprises and projects began to turn to ES.
 
-所以互联网面试，肯定会跟你聊聊分布式搜索引擎，也就一定会聊聊 es，如果你确实不知道，那你真的就 out 了。
+So Internet interview will definitely talk with you about distributed search engine, and also about es. If you really don't know, then you are really out.
 
-如果面试官问你第一个问题，确实一般都会问你 es 的分布式架构设计能介绍一下么？就看看你对分布式搜索引擎架构的一个基本理解。
+If the interviewer asks you the first question, he will ask you generally: can you introduce the distributed architecture design of ES? Take a look at your basic understanding of distrubuted search engine architecture.
 
-## 面试题剖析
-ElasticSearch 设计的理念就是分布式搜索引擎，底层其实还是基于 lucene 的。核心思想就是在多台机器上启动多个 es 进程实例，组成了一个 es 集群。
+## Analysis of interview questions
+The idea of ElasticSearch is distributed search engine. The bottom layer is actually based on Lucene. The core idea is to start multiple ES process instances on multiple machines to form an ES cluster.
 
-es 中存储数据的**基本单位是索引**，比如说你现在要在 es 中存储一些订单数据，你就应该在 es 中创建一个索引 `order_idx`，所有的订单数据就都写到这个索引里面去，一个索引差不多就是相当于是 mysql 里的一张表。
+The **basic unit of storing data in ES is index**. For example, if you want to store some order data in ES now, you should create an  index `order_idx` in ES, and all order data will be written into this index. An idex is almost the same as a table in mysql.
 
 ```
 index -> type -> mapping -> document -> field。
 ```
 
-这样吧，为了做个更直白的介绍，我在这里做个类比。但是切记，不要划等号，类比只是为了便于理解。
+Well. for a more straightforward introduction, I'll make an analogy here. But remember, don't draw an equal sign. Analogy is only for the convenience of understanding.
 
-index 相当于 mysql 里的一张表。而 type 没法跟 mysql 里去对比，一个 index 里可以有多个 type，每个 type 的字段都是差不多的，但是有一些略微的差别。假设有一个 index，是订单 index，里面专门是放订单数据的。就好比说你在 mysql 中建表，有些订单是实物商品的订单，比如一件衣服、一双鞋子；有些订单是虚拟商品的订单，比如游戏点卡，话费充值。就两种订单大部分字段是一样的，但是少部分字段可能有略微的一些差别。
+Index is equivalent to a table in MySQL. Type cannot be compared with MySQL. An index can have multiple types. Each type field is similar, but there are some slight differences. Let's say there is an index, the order index, which is used to store order data. For example, you can create tables in MySQL. Some orders are orders for physical goods, such as a dress and a pair of shoes. Some orders are orders for virtual goods, such as game point cards, and recharge the phone charges. Most of the fields of the two orders are the same, but a few of them may be slightly different.
 
-所以就会在订单 index 里，建两个 type，一个是实物商品订单 type，一个是虚拟商品订单 type，这两个 type 大部分字段是一样的，少部分字段是不一样的。
+Therefore, two types will be created in the order index, one is the physical goods order type, and the other is the virtual goods order type. Most of the fields of these two types are the same, and a few of them are different.
 
-很多情况下，一个 index 里可能就一个 type，但是确实如果说是一个 index 里有多个 type 的情况（**注意**，`mapping types` 这个概念在 ElasticSearch 7.X 已被完全移除，详细说明可以参考[官方文档](https://github.com/elastic/elasticsearch/blob/6.5/docs/reference/mapping/removal_of_types.asciidoc)），你可以认为 index 是一个类别的表，具体的每个 type 代表了 mysql 中的一个表。每个 type 有一个 mapping，如果你认为一个 type 是具体的一个表，index 就代表多个 type 同属于的一个类型，而 mapping 就是这个 type 的**表结构定义**，你在 mysql 中创建一个表，肯定是要定义表结构的，里面有哪些字段，每个字段是什么类型。实际上你往 index 里的一个 type 里面写的一条数据，叫做一条 document，一条 document 就代表了 mysql 中某个表里的一行，每个 document 有多个 field，每个 field 就代表了这个 document 中的一个字段的值。
+In many cases, there may be only one type in an index, but it's true that if there are multiple types in an index(**Note**, `mapping types` has been completely removed in elasticsearch 7. X, please refer to [official documents](https://github.com/elastic/elasticsearch/blob/6.5/docs/reference/mapping/removal_of_types.asciidoc) for details.) You can think that index is a category table, and each type representes a table in MySQL. Each type has a mapping. If you think a type is a specific table, index represents a type of multiple types. Mapping is the **table structure definition** of this type. When you create a table in mysql, you must define the table structure, which fields there are and what type each field is. In fact, you write a piece of data in a type in the index, which is called a document. A document represents a row in a table in MySQL. Each document has multiple fields, and each field represents the value of a field in the document.
 
 ![es-index-type-mapping-document-field](/images/es-index-type-mapping-document-field.png)
 
-你搞一个索引，这个索引可以拆分成多个 `shard`，每个 shard 存储部分数据。拆分多个 shard 是有好处的，一是**支持横向扩展**，比如你数据量是 3T，3 个 shard，每个 shard 就 1T 的数据，若现在数据量增加到 4T，怎么扩展，很简单，重新建一个有 4 个 shard 的索引，将数据导进去；二是**提高性能**，数据分布在多个 shard，即多台服务器上，所有的操作，都会在多台机器上并行分布式执行，提高了吞吐量和性能。
+You make an index, which can be split into multiple `shards`. Each shard stores part of the data. It's good to split multiple Shards. First, **supports horizontal expansion**. For example, if you data volume is 3T, there shards, and each shard has 1T data. If the current data volume is increased to 4T, how to expand it is very simple. Rebuild an index with four shards and import the data into it. Second, **improves performance**. The data is distributed in multiple shards, i.e. multiple servers. Some operations will be executed in parallel and distributed on multiple machines, which improves throughput and performance.
 
-接着就是这个 shard 的数据实际是有多个备份，就是说每个 shard 都有一个 `primary shard`，负责写入数据，但是还有几个 `replica shard`。`primary shard` 写入数据之后，会将数据同步到其他几个 `replica shard` 上去。
+Then there are actually multiple backups of the shard data, that is to say, each shard has a `primary shard`, which is responsible for writing data, but there are several `reokuca shards`. After the `primary shard` writes data, it will synchronize the data to several other `replica shards`.
 
 ![es-cluster](/images/es-cluster.png)
 
-通过这个 replica 的方案，每个 shard 的数据都有多个备份，如果某个机器宕机了，没关系啊，还有别的数据副本在别的机器上呢。高可用了吧。
+Through this replica scheme, each shard's data has multiple backups. If one machine goes down, it doesn't matter. There are other data copies on other machines. High availability.
 
-es 集群多个节点，会自动选举一个节点为 master 节点，这个 master 节点其实就是干一些管理的工作的，比如维护索引元数据、负责切换 primary shard 和 replica shard 身份等。要是 master 节点宕机了，那么会重新选举一个节点为 master 节点。
+In ES cluster, multiple nodes will automatically select a node as the master node. The master node is actually responsible for some management work, such as maintaining index metadata, switching primary shard and replica shard identities, etc. If the master node goes down, a new node will be selected as the master node.
 
-如果是非 master节点宕机了，那么会由 master 节点，让那个宕机节点上的 primary shard 的身份转移到其他机器上的 replica shard。接着你要是修复了那个宕机机器，重启了之后，master 节点会控制将缺失的 replica shard 分配过去，同步后续修改的数据之类的，让集群恢复正常。
+If the non master node is down, the master node will transfer the identity of the primary shard on that down node to the replica shard on other machines. Then, if you fix the down machine and restart it, the master node will control to allocate the missing replica shard, synchronize the subsequent modified data and so on, so that the cluster can return to normal.
 
-说得更简单一点，就是说如果某个非 master 节点宕机了。那么此节点上的 primary shard 不就没了。那好，master 会让 primary shard 对应的 replica shard（在其他机器上）切换为 primary shard。如果宕机的机器修复了，修复后的节点也不再是 primary shard，而是 replica shard。
+To put it more simple, if a non master node goes down. Then the primary shard on this node is gone. Well, the master will switch the replica shard corresponding to the primary shard (on other machines) to the primary shard. If the down machine is repaired, the repaired node is no longer a primary shard, but a replica shar.
 
-其实上述就是 ElasticSearch 作为分布式搜索引擎最基本的一个架构设计。
+In fact, the above is the basic architecture design of elasticsearch as a distributed search engine.
