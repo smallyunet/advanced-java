@@ -1,14 +1,14 @@
-## 面试题
+## Interview questions
 zookeeper 都有哪些使用场景？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 现在聊的 topic 是分布式系统，面试官跟你聊完了 dubbo 相关的一些问题之后，已经确认你对分布式服务框架/RPC框架基本都有一些认知了。那么他可能开始要跟你聊分布式相关的其它问题了。
 
 分布式锁这个东西，很常用的，你做 Java 系统开发，分布式系统，可能会有一些场景会用到。最常用的分布式锁就是基于 zookeeper 来实现的。
 
 其实说实话，问这个问题，一般就是看看你是否了解 zookeeper，因为 zookeeper 是分布式系统中很常见的一个基础系统。而且问的话常问的就是说 zookeeper 的使用场景是什么？看你知道不知道一些基本的使用场景。但是其实 zookeeper 挖深了自然是可以问的很深很深的。
 
-## 面试题剖析
+## Analysis of interview questions
 大致来说，zookeeper 的使用场景如下，我就举几个简单的，大家能说几个就好了：
 
 - 分布式协调

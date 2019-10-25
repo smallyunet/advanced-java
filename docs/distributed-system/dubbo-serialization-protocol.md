@@ -1,12 +1,12 @@
-## 面试题
+## Interview questions
 dubbo 支持哪些通信协议？支持哪些序列化协议？说一下 Hessian 的数据结构？PB 知道吗？为什么 PB 的效率是最高的？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 上一个问题，说说 dubbo 的基本工作原理，那是你必须知道的，至少要知道 dubbo 分成哪些层，然后平时怎么发起 rpc 请求的，注册、发现、调用，这些是基本的。
 
 接着就可以针对底层进行深入的问问了，比如第一步就可以先问问序列化协议这块，就是平时 RPC 的时候怎么走的？
 
-## 面试题剖析
+## Analysis of interview questions
 **序列化**，就是把数据结构或者是一些对象，转换为二进制串的过程，而**反序列化**是将在序列化过程中所生成的二进制串转换成数据结构或者对象的过程。
 
 ![serialize-deserialize](/images/serialize-deserialize.png)

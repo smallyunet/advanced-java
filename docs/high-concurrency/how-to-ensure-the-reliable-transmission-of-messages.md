@@ -6,7 +6,7 @@ This is for sure. With MQ, there is a bisic principle, that is, there should be 
 
 If you use MQ to deliber very core messages, such as biling and fee deduction messages, you must ensure that **will never lose the billing messages** in the process of MQ delivery.
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 Data loss may occur in producers, MQ and consumers. Let's analyze it from RabbitMQ and Kafka respectively.
 
 ### RabbitMQ

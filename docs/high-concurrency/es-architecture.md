@@ -10,7 +10,7 @@ So Internet interview will definitely talk with you about distributed search eng
 
 If the interviewer asks you the first question, he will ask you generally: can you introduce the distributed architecture design of ES? Take a look at your basic understanding of distrubuted search engine architecture.
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 The idea of ElasticSearch is distributed search engine. The bottom layer is actually based on Lucene. The core idea is to start multiple ES process instances on multiple machines to form an ES cluster.
 
 The **basic unit of storing data in ES is index**. For example, if you want to store some order data in ES now, you should create an  index `order_idx` in ES, and all order data will be written into this index. An idex is almost the same as a table in mysql.

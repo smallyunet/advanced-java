@@ -7,7 +7,7 @@ If someone asks about your MQ knowledge, **high avaliability is a must**. [As me
 
 If you are stupid and use an MQ, you have never considered all kinds of problems. The interviewer's felling for you is that you can only some techniques simply, without any thinking, and your impression is not very good at once. If such a student is recruited to be an ordinary younger brother with a salary of less then 20K and a senior engineer with a salary of 20K+, it will be a disaster. Let's design a system. There must be a lot of holes in it. The company will suffer losses in the accident, and the team will back up together.
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 It's a good question to ask, because I can't ask you know to guarantee the high availability of Kafka. How to ensure the high availabililty of ActiveMQ? If an interviewer asks like this, it seems that he is not good at it. He may use RabbitMQ instead of Kafka. Why do you come up and ask him Kafka? Isn't that a clear and diffcult one?
 
 So a good interviewer asks how to guarantee the high availability of MQ. This is which MQ you have used, and you will talk about your understanding of the high availability of that MQ.

@@ -4,7 +4,7 @@ Do you do MySQL read-write separation? How to realize the read-write separation 
 ## Psynological analysis of interviewers
 At this stage of high concurrency, it is necessary to separate reading from writing. Because in fact, most internet companies, some websites, or apps, actually read more than write less. So in this case, it is to write a master database, but eh master database hangs multiple slave databases, and then reads from multiple slave databases. Can't it support higher read concurrent pressure?
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 ### How to realize the read-write separation of MySQL?
 In fact, it's very simple. It's based on the master-slave replication architecture. In short, it's to build a master database and hang multiple slave databases. Then we just write the master database and the master database will automatically synchronize the data to the slave database.
 

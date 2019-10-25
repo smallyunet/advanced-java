@@ -4,7 +4,7 @@ How to ensure that messages are noe consumed repeatedly? In other words, how to 
 ## Psychological analysis of interviewers
 In fact, this is s avery common question. These two questions can be asked together. Since it's consumption message, we must consider whether it will be repeated consumption. Can we avoid repeated consumption? Or is it OK to repeat consumption without causing system exceptions? This is the basic problem in MQ field. In fact, it is still a question to ask you **how to ensure idempotence** by using message queuing. This is a question to be considered in your architecture.
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 To answer this question, first of all, you don't need to hear about repeated information, so you have no idea. First of all, you can say about the possible repeated consumption problems.
 
 First of all, for example, RabbitMQ, RocketMQ and Kafka may have the problem of repeated message consumption, which is normal. Because this problem is usually not guaranted by MQ itself, but by our development. Take Kafka, for example, and talk about how to re consume.

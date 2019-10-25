@@ -9,7 +9,7 @@ In fact, when it comes to this question, the interviewers usually have to examin
 
 To be honest, when asking similar questions, most people are basically confused, because they never think about similar questions at ordinary times. Similar questions, for example, what would you do if you were asked to design a Spring framwork? What would you do if you were asked to design a Dubbo framework? What would you do if you were asked to design a Mybatis framework?
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 In fact, to answer such questions, let's be clear. Don't ask you to look at the source code of that technology, at least you need to know the basic principle, core components and basic architecture of that technology, and then refer to some open-source technologies to explain the idea of designing a system.
 
 For example, for this message queuing system, let's consider it from the following perspectives:

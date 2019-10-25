@@ -1,7 +1,7 @@
-## 面试题
+## Interview questions
 redis 集群模式的工作原理能说一下么？在集群模式下，redis 的 key 是如何寻址的？分布式寻址都有哪些算法？了解一致性 hash 算法吗？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 在前几年，redis 如果要搞几个节点，每个节点存储一部分的数据，得**借助一些中间件**来实现，比如说有 `codis`，或者 `twemproxy`，都有。有一些 redis 中间件，你读写 redis 中间件，redis 中间件负责将你的数据分布式存储在多台机器上的 redis 实例中。
 
 这两年，redis 不断在发展，redis 也不断有新的版本，现在的 redis 集群模式，可以做到在多台机器上，部署多个 redis 实例，每个实例存储一部分的数据，同时每个 redis 主实例可以挂 redis 从实例，自动确保说，如果 redis 主实例挂了，会自动切换到 redis 从实例上来。
@@ -12,7 +12,7 @@ redis 集群模式的工作原理能说一下么？在集群模式下，redis �
 
 redis cluster，主要是针对**海量数据+高并发+高可用**的场景。redis cluster 支撑 N 个 redis master node，每个 master node 都可以挂载多个 slave node。这样整个 redis 就可以横向扩容了。如果你要支撑更大数据量的缓存，那就横向扩容更多的 master 节点，每个 master 节点就能存放更多的数据了。
 
-## 面试题剖析
+## Analysis of interview questions
 ### redis cluster 介绍
 - 自动将数据进行分片，每个 master 上放一部分数据
 - 提供内置的高可用支持，部分 master 不可用时，还是可以继续工作的

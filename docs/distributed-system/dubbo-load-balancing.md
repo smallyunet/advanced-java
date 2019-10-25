@@ -1,7 +1,7 @@
-## 面试题
+## Interview questions
 dubbo 负载均衡策略和集群容错策略都有哪些？动态代理策略呢？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 继续深问吧，这些都是用 dubbo 必须知道的一些东西，你得知道基本原理，知道序列化是什么协议，还得知道具体用 dubbo 的时候，如何负载均衡，如何高可用，如何动态代理。
 
 说白了，就是看你对 dubbo 熟悉不熟悉：
@@ -10,7 +10,7 @@ dubbo 负载均衡策略和集群容错策略都有哪些？动态代理策略�
 - 负载均衡策略、集群容错策略、动态代理策略：dubbo 跑起来的时候一些功能是如何运转的？怎么做负载均衡？怎么做集群容错？怎么生成动态代理？
 - dubbo SPI 机制：你了解不了解 dubbo 的 SPI 机制？如何基于 SPI 机制对 dubbo 进行扩展？
 
-## 面试题剖析
+## Analysis of interview questions
 ### dubbo 负载均衡策略
 #### random loadbalance
 默认情况下，dubbo 是 random load balance ，即**随机**调用实现负载均衡，可以对 provider 不同实例**设置不同的权重**，会按照权重来负载均衡，权重越大分配流量越高，一般就用这个默认的就可以了。

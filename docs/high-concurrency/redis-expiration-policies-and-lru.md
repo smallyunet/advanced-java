@@ -1,7 +1,7 @@
-## 面试题
+## Interview questions
 redis 的过期策略都有哪些？内存淘汰机制都有哪些？手写一下 LRU 代码实现？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 如果你连这个问题都不知道，上来就懵了，回答不出来，那线上你写代码的时候，想当然的认为写进 redis 的数据就一定会存在，后面导致系统各种 bug，谁来负责？
 
 常见的有两个问题：
@@ -17,7 +17,7 @@ redis 的过期策略都有哪些？内存淘汰机制都有哪些？手写一�
 
 这是由 redis 的过期策略来决定。
 
-## 面试题剖析
+## Analysis of interview questions
 ### redis 过期策略
 redis 过期策略是：**定期删除+惰性删除**。
 

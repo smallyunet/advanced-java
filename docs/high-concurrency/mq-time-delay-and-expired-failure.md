@@ -6,7 +6,7 @@ In fact, the essence of the question is to say that there may be something wrong
 
 So in this case, in fact, it's quite common online. It's usually not available. One is a big case. Generally, for example, the consumer needs to write MySQL after each consumption. As a result, MySQL hangs up and the consumer hangs there. It doesn't move. Or something goes wrong with the consumer, which causes the consumption speed to be extremely slow.
 
-## Analysis of interview questions
+## ## Analysis of interview questions
 About this matter, let's sort it out one by one. Let's assume a scenario. Now we have a consumer failure, and then a large number or messages are backing in MQ. Now there are accidents and panic.
 
 ### A large number of messages have been backlog in MQ for serveral hours

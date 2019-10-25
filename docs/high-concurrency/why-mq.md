@@ -17,7 +17,7 @@ If you haven't thought about it, then you blindly get an MQ into the system, and
 Don't foolishly pat your head to see your personal preferences and use an MQ, such as Kafka, without even investigating what kinds of MQ are popular in the industry. What are the advantages and disadvantages of each MQ? Each MQ **has no absolute good or bad**, but it depends on which scenaric can be used to **enhance strengths and avoid wearknesses, make use of its strengths and avoid its weaknesses**.    
 If a candidate who does not consider technology selection is recruited into the team, leader gives him a task to design a system. He uses some technology in it, and may not consider the selection. The last technology may not be appropriate, but it is pitkeeping.
 
-## Analysis of Interview Questions
+## ## Analysis of interview questions
 ### Why use message queues
 In fact, it si to ask you what use scenarics are there in the message queue, and then what specific scenarios are in you project, and what are using the message queue in this scenario?
 

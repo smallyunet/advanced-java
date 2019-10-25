@@ -1,12 +1,12 @@
-## 面试题
+## Interview questions
 redis 和 memcached 有什么区别？redis 的线程模型是什么？为什么 redis 单线程却能支撑高并发？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 这个是问 redis 的时候，最基本的问题吧，redis 最基本的一个内部原理和特点，就是 redis 实际上是个**单线程工作模型**，你要是这个都不知道，那后面玩儿 redis 的时候，出了问题岂不是什么都不知道？
 
 还有可能面试官会问问你 redis 和 memcached 的区别，但是 memcached 是早些年各大互联网公司常用的缓存方案，但是现在近几年基本都是 redis，没什么公司用 memcached 了。
 
-## 面试题剖析
+## Analysis of interview questions
 
 ### redis 和 memcached 有啥区别？
 

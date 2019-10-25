@@ -1,12 +1,12 @@
-## 面试题
+## Interview questions
 dubbo 的 spi 思想是什么？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 继续深入问呗，前面一些基础性的东西问完了，确定你应该都 ok，了解 dubbo 的一些基本东西，那么问个稍微难一点点的问题，就是 spi，先问问你 spi 是啥？然后问问你 dubbo 的 spi 是怎么实现的？
 
 其实就是看看你对 dubbo 的掌握如何。
 
-## 面试题剖析
+## Analysis of interview questions
 ### spi 是啥？
 spi，简单来说，就是 `service provider interface`，说白了是什么意思呢，比如你有个接口，现在这个接口有 3 个实现类，那么在系统运行的时候对这个接口到底选择哪个实现类呢？这就需要 spi 了，需要**根据指定的配置**或者是**默认的配置**，去**找到对应的实现类**加载进来，然后用这个实现类的实例对象。
 

@@ -1,10 +1,10 @@
-## 面试题
+## Interview questions
 一般实现分布式锁都有哪些方式？使用 redis 如何设计分布式锁？使用 zk 来设计分布式锁可以吗？这两种分布式锁的实现方式哪种效率比较高？
 
-## 面试官心理分析
+## Psychnological analysis of interviewers
 其实一般问问题，都是这么问的，先问问你 zk，然后其实是要过渡到 zk 相关的一些问题里去，比如分布式锁。因为在分布式系统开发中，分布式锁的使用场景还是很常见的。
 
-## 面试题剖析
+## Analysis of interview questions
 ### redis 分布式锁
 
 官方叫做 `RedLock` 算法，是 redis 官方支持的分布式锁算法。
