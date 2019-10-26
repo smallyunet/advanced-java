@@ -31,7 +31,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [Redis 的并发竞争问题是什么？如何解决这个问题？了解 Redis 事务的 CAS 方案吗？](/docs/high-concurrency/redis-cas.md)
 - [生产环境中的 Redis 是怎么部署的？](/docs/high-concurrency/redis-production-environment.md)
 
-### 分库分表
+### Sub library table
 - [为什么要分库分表（设计高并发系统的时候，数据库层面该如何设计）？用过哪些分库分表中间件？不同的分库分表中间件都有什么优点和缺点？你们具体是如何对数据库如何进行垂直拆分或水平拆分的？](/docs/high-concurrency/database-shard.md)
 - [现在有一个未分库分表的系统，未来要分库分表，如何设计才可以让系统从未分库分表动态切换到分库分表上？](/docs/high-concurrency/database-shard-method.md)
 - [如何设计可以动态扩容缩容的分库分表方案？](/docs/high-concurrency/database-shard-dynamic-expand.md)
@@ -43,12 +43,12 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ### High concurrency system
 - [How to design a high concurrency system?](/docs/high-concurrency/high-concurrency-design.md)
 
-## 分布式系统
+## Distributed system
 ### [Interview battery](/docs/distributed-system/distributed-system-interview.md)
-### 系统拆分
+### System split
 - [为什么要进行系统拆分？如何进行系统拆分？拆分后不用 Dubbo 可以吗？](/docs/distributed-system/why-dubbo.md)
 
-### 分布式服务框架
+### Distributed service framework
 - [说一下 Dubbo 的工作原理？注册中心挂了可以继续通信吗？](/docs/distributed-system/dubbo-operating-principle.md)
 - [Dubbo 支持哪些序列化协议？说一下 Hessian 的数据结构？PB 知道吗？为什么 PB 的效率是最高的？](/docs/distributed-system/dubbo-serialization-protocol.md)
 - [Dubbo 负载均衡策略和集群容错策略都有哪些？动态代理策略呢？](/docs/distributed-system/dubbo-load-balancing.md)
@@ -58,17 +58,17 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [分布式服务接口请求的顺序性如何保证？](/docs/distributed-system/distributed-system-request-sequence.md)
 - [如何自己设计一个类似 Dubbo 的 RPC 框架？](/docs/distributed-system/dubbo-rpc-design.md)
 
-### 分布式锁
+### Distributed lock
 - [Zookeeper 都有哪些应用场景？](/docs/distributed-system/zookeeper-application-scenarios.md)
 - [使用 Redis 如何设计分布式锁？使用 Zookeeper 来设计分布式锁可以吗？以上两种分布式锁的实现方式哪种效率比较高？](/docs/distributed-system/distributed-lock-redis-vs-zookeeper.md)
 
-### 分布式事务
+### Distributed transaction
 - [分布式事务了解吗？你们如何解决分布式事务问题的？TCC 如果出现网络连不通怎么办？XA 的一致性如何保证？](/docs/distributed-system/distributed-transaction.md)
 
-### 分布式会话
+### Distributed session
 - [集群部署时的分布式 Session 如何实现？](/docs/distributed-system/distributed-session.md)
 
-## 高可用架构
+## High avalibrary architecture
 - [Introduction to Hystrix](/docs/high-availability/hystrix-introduction.md)
 - [电商网站详情页系统架构](/docs/high-availability/e-commerce-website-detail-page-architecture.md)
 - [Hystrix 线程池技术实现资源隔离](/docs/high-availability/hystrix-thread-pool-isolation.md)
