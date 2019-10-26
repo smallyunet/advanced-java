@@ -1,22 +1,22 @@
 ## Interview questions
-es 写入数据的工作原理是什么啊？es 查询数据的工作原理是什么啊？底层的 lucene 介绍一下呗？倒排索引了解吗？
+How does ES write data? How does ES query data work? What about Lucene at the bottom? Do you understand the inverted index?
 
 ## Psychnological analysis of interviewers
-问这个，其实面试官就是要看看你了解不了解 es 的一些基本原理，因为用 es 无非就是写入数据，搜索数据。你要是不明白你发起一个写入和搜索请求的时候，es 在干什么，那你真的是......
+Ask this, in fact, the interviewer is to see if you understand some basic principles of ES, because using ES is nothing more than writing data and searching data. If you don't undersatnd what ES is doing when you initiate a write and search request, then you are...
 
-对 es 基本就是个黑盒，你还能干啥？你唯一能干的就是用 es 的 api 读写数据了。要是出点什么问题，你啥都不知道，那还能指望你什么呢？
+Yes, ES is basically a black box. What else can you do? The only thing you can do is read and write data with ES API. If something goes wrong and you don't know anything, what else can you expect?
 
 ## Analysis of interview questions
-### es 写数据过程
-- 客户端选择一个 node 发送请求过去，这个 node 就是 `coordinating node`（协调节点）。
-- `coordinating node` 对 document 进行**路由**，将请求转发给对应的 node（有 primary shard）。
-- 实际的 node 上的 `primary shard` 处理请求，然后将数据同步到 `replica node`。
-- `coordinating node` 如果发现 `primary node` 和所有 `replica node` 都搞定之后，就返回响应结果给客户端。
+### ES data writing process
+- The client selects a node to send the request. This node is the `coordinating node`.
+- `coordinating node` **routes** the document and forwards the request to the corresponding node(with primary shard).
+- The `primary shard` on the actual node processes the request and synchronizes the data to the `replica node`.
+- If the `primary node` and all `replica nodes` are found to be completed, the response result will be returned to the client.
 
 ![es-write](/images/es-write.png)
 
-### es 读数据过程
-可以通过 `doc id` 来查询，会根据 `doc id` 进行 hash，判断出来当时把 `doc id` 分配到了哪个 shard 上面去，从那个 shard 去查询。
+### ES data reading process
+You can query by `doc id`. You will has according to `doc id`, and judge which shard you assigned `doc id` to, and query from that shard.
 
 - 客户端发送请求到**任意**一个 node，成为 `coordinate node`。
 - `coordinate node` 对 `doc id` 进行哈希路由，将请求转发到对应的 node，此时会使用 `round-robin` **随机轮询算法**，在 `primary shard` 以及其所有 replica 中随机选择一个，让读请求负载均衡。

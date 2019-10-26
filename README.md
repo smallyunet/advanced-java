@@ -14,7 +14,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 
 ### [Search Engines](/docs/high-concurrency/es-introduction.md)
 - [Can you explain the principle of distributed architecture of ES?](/docs/high-concurrency/es-architecture.md)
-- [es 写入数据的工作原理是什么啊？es 查询数据的工作原理是什么啊？底层的 lucene 介绍一下呗？倒排索引了解吗？](/docs/high-concurrency/es-write-query-search.md)
+- [How does ES write data? How does ES query data work? What about Lucene at the bottom? Do you understand the inverted index?](/docs/high-concurrency/es-write-query-search.md)
 - [es 在数据量很大的情况下（数十亿级别）如何提高查询效率啊？](/docs/high-concurrency/es-optimizing-query-performance.md)
 - [es 生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少个分片？](/docs/high-concurrency/es-production-cluster.md)
 
@@ -40,8 +40,8 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ### Read/write separation
 - [How to realize the read-write separation of MySQL? What is the principle of MySQL master0slave replication? How to solve the dalay problem of MySQL master-slave synchronization?](/docs/high-concurrency/mysql-read-write-separation.md)
 
-### 高并发系统
-- [如何设计一个高并发系统？](/docs/high-concurrency/high-concurrency-design.md)
+### High concurrency system
+- [How to design a high concurrency system?](/docs/high-concurrency/high-concurrency-design.md)
 
 ## 分布式系统
 ### [Interview battery](/docs/distributed-system/distributed-system-interview.md)
