@@ -29,7 +29,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [了解什么是 redis 的雪崩、穿透和击穿？Redis 崩溃之后会怎么样？系统该如何应对这种情况？如何处理 Redis 的穿透？](/docs/high-concurrency/redis-caching-avalanche-and-caching-penetration.md)
 - [如何保证缓存与数据库的双写一致性？](/docs/high-concurrency/redis-consistence.md)
 - [What are the concurrent competition problems of redis? How to solve this problem? Do you know CAS scheme of redis transaction?](/docs/high-concurrency/redis-cas.md)
-- [生产环境中的 Redis 是怎么部署的？](/docs/high-concurrency/redis-production-environment.md)
+- [How is Redis deployed in a production envirnoment?](/docs/high-concurrency/redis-production-environment.md)
 
 ### Sub library table
 - [为什么要分库分表（设计高并发系统的时候，数据库层面该如何设计）？用过哪些分库分表中间件？不同的分库分表中间件都有什么优点和缺点？你们具体是如何对数据库如何进行垂直拆分或水平拆分的？](/docs/high-concurrency/database-shard.md)

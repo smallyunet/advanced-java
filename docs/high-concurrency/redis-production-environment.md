@@ -1,20 +1,20 @@
 ## Interview questions
-生产环境中的 redis 是怎么部署的？
+How is Redis deployed in a production envirnoment?
 
 ## Psychnological analysis of interviewers
-看看你了解不了解你们公司的 redis 生产集群的部署架构，如果你不了解，那么确实你就很失职了，你的 redis 是主从架构？集群架构？用了哪种集群方案？有没有做高可用保证？有没有开启持久化机制确保可以进行数据恢复？线上 redis 给几个 G 的内存？设置了哪些参数？压测后你们 redis 集群承载多少 QPS？
+See if you understand the deployment architecture of your company's redis production cluster. If you don't understand it, then you are really derelict. Is your redis master-slave architecture? Cluster architecture? Which clustering scheme is used? Is there a high avaliability guarantee? Is there a mechanism for enabling persistence to ensure data recovery? Online redis gives a few G's of memory? What parameters are set? How many QPS do your redis clusters carry after the pressure test?
 
-兄弟，这些你必须是门儿清的，否则你确实是没好好思考过。
+Brother, you must be clear, otherwise you really haven't thought about it.
 
 ## Analysis of interview questions
-redis cluster，10 台机器，5 台机器部署了 redis 主实例，另外 5 台机器部署了 redis 的从实例，每个主实例挂了一个从实例，5 个节点对外提供读写服务，每个节点的读写高峰qps可能可以达到每秒 5 万，5 台机器最多是 25 万读写请求/s。
+Redis cluster, 10 machines, 5 machines deployed redis master instance, 5 other machines deployed redis slave instances, each master instance hangs slave instance, 5 nodes provide read and write services externally, each node Reading and writing peak qps may reach 50000 per second, and 5 machines can have up to 250000 read/write requests/s.
 
-机器是什么配置？32G 内存+ 8 核 CPU + 1T 磁盘，但是分配给 redis 进程的是10g内存，一般线上生产环境，redis 的内存尽量不要超过 10g，超过 10g 可能会有问题。
+What is the configuration of the machine? 32G memory + 8 core CPU + 1T disk, but allocated to the redis process is 10g memory, general online production environment, redis memory should not exceed 10g, more than 10g may have problems.
 
-5 台机器对外提供读写，一共有 50g 内存。
+5 machines provide external reading and writing, a total of 50g of memory.
 
-因为每个主实例都挂了一个从实例，所以是高可用的，任何一个主实例宕机，都会自动故障迁移，redis 从实例会自动变成主实例继续提供读写服务。
+Beacuse each primary instance hangs a secondary instance, it is highly available. Any primary instance is down, and the fault will be automatically migrated. Redis will automatically become the primary instance and continue to provide read and write servides.
 
-你往内存里写的是什么数据？每条数据的大小是多少？商品数据，每条数据是 10kb。100 条数据是 1mb，10 万条数据是 1g。常驻内存的是 200 万条商品数据，占用内存是 20g，仅仅不到总内存的 50%。目前高峰期每秒就是 3500 左右的请求量。
+What data are you writing into memory? What is the size of each piece of data? Product data, each data is 10KB. 100 data is 1MB, and 100,000 data is 1G. Resident memory is 2 million pieces of commodity data, occupying 20G of memory, only less than 50% of total memory. At the current peak period, it is about 3,500 requests per second.
 
-其实大型的公司，会有基础架构的 team 负责缓存集群的运维。
+In fact, in a large company, the team with the infrastructure is responsible for the operation and maintenance of the cache cluster.
