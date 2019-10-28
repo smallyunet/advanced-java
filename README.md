@@ -28,7 +28,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [Redis 集群模式的工作原理能说一下么？在集群模式下，Redis 的 key 是如何寻址的？分布式寻址都有哪些算法？了解一致性 hash 算法吗？如何动态增加和删除一个节点？](/docs/high-concurrency/redis-cluster.md)
 - [了解什么是 redis 的雪崩、穿透和击穿？Redis 崩溃之后会怎么样？系统该如何应对这种情况？如何处理 Redis 的穿透？](/docs/high-concurrency/redis-caching-avalanche-and-caching-penetration.md)
 - [如何保证缓存与数据库的双写一致性？](/docs/high-concurrency/redis-consistence.md)
-- [Redis 的并发竞争问题是什么？如何解决这个问题？了解 Redis 事务的 CAS 方案吗？](/docs/high-concurrency/redis-cas.md)
+- [What are the concurrent competition problems of redis? How to solve this problem? Do you know CAS scheme of redis transaction?](/docs/high-concurrency/redis-cas.md)
 - [生产环境中的 Redis 是怎么部署的？](/docs/high-concurrency/redis-production-environment.md)
 
 ### Sub library table

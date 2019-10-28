@@ -1,16 +1,16 @@
 ## Interview questions
-redis 的并发竞争问题是什么？如何解决这个问题？了解 redis 事务的 CAS 方案吗？
+What are the concurrent competition problems of redis? How to solve this problem? Do you know CAS scheme of redis transaction?
 
 ## Psychnological analysis of interviewers
-这个也是线上非常常见的一个问题，就是**多客户端同时并发写**一个 key，可能本来应该先到的数据后到了，导致数据版本错了；或者是多客户端同时获取一个 key，修改值之后再写回去，只要顺序错了，数据就错了。
+This is also a very common online problem, that is **multiple clients write** a key at the same time, maybe the data that should have arrived first comes later, resulting in the wrong data version; or multiple clients get a key at the same time, modify the value and then write back, as long as the sequence is wrong, the data is wrong.
 
-而且 redis 自己就有天然解决这个问题的 CAS 类的乐观锁方案。
+Moreover, redis has its own optimistic lock scheme of CAS class to solve this problem naturally.
 
 ## Analysis of interview questions
-某个时刻，多个系统实例都去更新某个 key。可以基于 zookeeper 实现分布式锁。每个系统通过 zookeeper 获取分布式锁，确保同一时间，只能有一个系统实例在操作某个 key，别人都不允许读和写。
+At a certain time, multiple system instances update a key. Distributed locks can be implemented based on zookeeper. Each system obtains a distributed lock through zookeeper to ensure that only one system instance can operate a key at the same time, and no one else is allowed to read or write.
 
 ![zookeeper-distributed-lock](/images/zookeeper-distributed-lock.png)
 
-你要写入缓存的数据，都是从 mysql 里查出来的，都得写入 mysql 中，写入 mysql 中的时候必须保存一个时间戳，从 mysql 查出来的时候，时间戳也查出来。
+All the data you want to write to the cache are found in MySQL. You have to write to MySQL. When you write to MySQL, you must save a time stamp. When you check from mysql, you can also find the time stamp.
 
-每次要**写之前，先判断**一下当前这个 value 的时间戳是否比缓存里的 value 的时间戳要新。如果是的话，那么可以写，否则，就不能用旧的数据覆盖新的数据。
+Before **writing, first judge** whether the current value timestamp is never than the value timestamp in the cache. If so, it can be written. Otherwise, the old data cannot be used to cover the new data.
