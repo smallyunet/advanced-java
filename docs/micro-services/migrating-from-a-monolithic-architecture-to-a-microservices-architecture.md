@@ -1,37 +1,36 @@
-# 迁移到微服务综述
+# Migration to Microservices Overview
 
-迁移单体式应用到微服务架构意味着一系列现代化过程，有点像这几代开发者一直在做的事情，实时上，当迁移时，我们可以重用一些想法。
+Migrating a monolithic application to a microservices architecture means a series of modernization processes, a bit like what these generations of developers have been doing. In real time, when migrating, we can reuse some ideas.
 
-一个策略是：不要大规模（big bang）重写代码（只有当你承担重建一套全新基于微服务的应用时候可以采用重写这种方法）。重写代码听起来很不错，但实际上充满了风险最终可能会失败，就如 Martin Fowler 所说：
+One strategy is: don't rewrite the code on a big bang (you can override this method only if you are rebuilding a new microservice-based application). Rewriting the code sounds great, but it's actually full of rish and may end up failing, as Martin Fowler said.
 
-> “the only thing a Big Bang rewrite guarantees is a Big Bang!”
+> The only thing a Big Bang rewrite guarantees is a Big Bang!
 
-相反，应该采取逐步迁移单体式应用的策略，通过逐步生成微服务新应用，与旧的单体式应用集成，随着时间推移，单体式应用在整个架构中比例逐渐下降直到消失或者成为微服务架构一部分。这个策略有点像在高速路上限速到 70 迈对车做维护，尽管有挑战，但是比起重写的风险小很多。
+Instad, a strategy of gradual migration of monolithic applications should be adopted. By gradually generating new microservices applications and integrating with the old monolithic applications, over time, the proportion of monolithic applications in the entrie architecture gradually declines until disappears or becomes Part of the microservices architecture. This strategy is a bit like maintaining a speed limit of 70 on the highway. Although it is challenging, it is much less risky then rewriting.
 
-Martin Fowler 将这种现代化策略成为绞杀（Strangler）应用，名字来源于雨林中的绞杀藤（strangler vine），也叫绞杀榕 (strangler fig)。绞杀藤为了爬到森林顶端都要缠绕着大叔生长，一段时间后，树死了，留下树形藤。这种应用也使用同一种模式，围绕着传统应用开发了新型微服务应用，传统应用会渐渐退出舞台。
+Martin Fowler used this modernizatino strategy as a Strangler application, named after the strangler vine in the rainforest, also known as the strangler fig. In order to climb to the top of the forest, the vines are entangled in the growth of the uncle. After a while, the tree dies and leaves the tree-shaped vine. This application also uses the same model to develop new microservices applications around traditional applications, and traditional applications will gradually step out of the stage.
 
+Let's take a look at other possible strategies.
 
-我们来看看其他可行策略。
+# Strategy 1 - Stop mining
 
-# 策略 1——停止挖掘
-
-Law of Holes 是说当自己进洞就应该停止挖掘。对于单体式应用不可管理时这是最佳建议。换句话说，应该停止让单体式应用继续变大，也就是说当开发新功能时不应该为旧单体应用添加新代码，最佳方法应该是将新功能开发成独立微服务。如下图所示：
+Law of Holes means that you should stop digging when you enter the hole. This is the best advice when a monolithic applciation is not manageable. In other words, you should stop letting monolithic applications continue to grow larger, which means that when developing new features, you should not add new code to the old single application. The best approach would be to develop the new functionality into a standslone microservice. As shown below:
 
 ![1](/images/Law-of-Holes.png)
 
-除了新服务和传统应用，还有两个模块，其一是请求路由器，负责处理入口（http）请求，有点像之前提到的 API 网关。路由器将新功能请求发送给新开发的服务，而将传统请求还发给单体式应用。
+In addition to new services and legacy applications, there are two modules, one of which is the request router, which handles the ingress (http) request, a bit like the API gateway mentioned earlier. The router sends new feature requests to the newly developed service, and the legacy request is sent to the single application.
 
-另外一个是胶水代码（glue code），将微服务和单体应用集成起来，微服务很少能独立存在，经常会访问单体应用的数据。胶水代码，可能在单体应用或者为服务或者二者兼而有之，负责数据整合。微服务通过胶水代码从单体应用中读写数据。​
+The other is the glut code, which integrates microservices with single applications. Microservices rarely exist independently and often access data from a single application. The glue code, which may be in a single application or as a service or both, is responsible for data integration. Microservices read and write data from a single application using glue code.
 
-微服务有三种方式访问单体应用数据：
+Microservices have three ways to access single application data:
 
-- 换气单体应用提供的远程 API
-- 直接访问单体应用数据库
-- 自己维护一份从单体应用中同步的数据
+- Remote API provided by the Ventilation Single Application
+- Direct access to the single application database
+- Maintain a data that is synchronized from a single applciation
 
-胶水代码也被称为容灾层（anti-corruption layer），这是因为胶水代码保护微服务全新域模型免受传统单体应用域模型污染。胶水代码在这两种模型间提供翻译功能。术语 anti-corruption layer 第一次出现在 Eric Evans 撰写的必读书 *Domain Driven Design*，随后就被提炼为一篇白皮书。开发容灾层可能有点不是很重要，但却是避免单体式泥潭的必要部分。
+The glue code is also known as the anti-corruption layer because the glue code protects the micro-service new domain model from the traditional single-application domain model. The gule code provides translation between the two nodels. The term anti-corruption layer first appeared in Eric Evans's must-read book *Domain Driven Design*, which was later refined into a white paper. Developing a disaster recovery layer may not be very important, but it is a necessary part of avoiding a monolithic quagmire.
 
-将新功能以轻量级微服务方式实现由很多优点，例如可以阻止单体应用变的更加无法管理。微服务本身可以开发、部署和独立扩展。采用微服务架构会给开发者带来不同的切身感受。
+Implementing new features in a lightweight microservice approach has many advantages, such as prevening individual applications from becoming more unmanageable. Microservices themselves can be developed, deployed, and scaled independently. Adopting a micro-service architecture will give developers different personal experiences.
 
 然而，这方法并不解决任何单体式本身问题，为了解决单体式本身问题必须深入单体应用​做出改变。我们来看看这么做的策略。
 
