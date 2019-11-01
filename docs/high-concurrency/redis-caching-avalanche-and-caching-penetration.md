@@ -1,47 +1,63 @@
 ## Interview questions
-了解什么是 redis 的雪崩、穿透和击穿？redis 崩溃之后会怎么样？系统该如何应对这种情况？如何处理 redis 的穿透？
+What is the avalanche, penetration and breakdown of redis? What happens when redis crashes? How should the system deal with this situation? How to deal with redis penetration?
 
 ## Psychnological analysis of interviewers
-其实这是问到缓存必问的，因为缓存雪崩和穿透，是缓存最大的两个问题，要么不出现，一旦出现就是致命性的问题，所以面试官一定会问你。
+In face, it's necessary to ask about cache, because the avalanche and penetrationo of cache are the two biggest problems of cache, or they don't appear. Once they appear, they are fatal problems, so the interviewer will ask you.
 
 ## Analysis of interview questions
-### 缓存雪崩
-对于系统 A，假设每天高峰期每秒 5000 个请求，本来缓存在高峰期可以扛住每秒 4000 个请求，但是缓存机器意外发生了全盘宕机。缓存挂了，此时 1 秒 5000 个请求全部落数据库，数据库必然扛不住，它会报一下警，然后就挂了。此时，如果没有采用什么特别的方案来处理这个故障，DBA 很着急，重启数据库，但是数据库立马又被新的流量给打死了。
+### Cache avalanche
+For system A, suppose that there are 5000 requests per second at the peak of each day, and the cache can handle 4000 requests per second at the peak of each day, but the cache machine unexpectedly goes down completely. The cache is hung. At this time, 5000 requests fall into the database in one second. The database will not be able to carry them. It will give an alarm and then hang up. At this time, if no special scheme is adopted to deal with this fault, DBA is in a hurry to restart the database, but the database is immediately killed by the new traffic.
 
-这就是缓存雪崩。
+This is the cache avalanche.
 
 ![redis-caching-avalanche](/images/redis-caching-avalanche.png)
 
-大约在 3 年前，国内比较知名的一个互联网公司，曾因为缓存事故，导致雪崩，后台系统全部崩溃，事故从当天下午持续到晚上凌晨 3~4 点，公司损失了几千万。
+About three years ago, a well-known Internet company in China suffered from an avalanche and background system crash due to a cache accident. The accident lasted from the afternoon of the same day to 3-4 a.m. In the evening, and the company lost tens of millions.
 
-缓存雪崩的事前事中事后的解决方案如下。
-- 事前：redis 高可用，主从+哨兵，redis cluster，避免全盘崩溃。
-- 事中：本地 ehcache 缓存 + hystrix 限流&降级，避免 MySQL 被打死。
-- 事后：redis 持久化，一旦重启，自动从磁盘上加载数据，快速恢复缓存数据。
+The solution to the problem is as follows.
+- In advance: redis is highly available, master-slave + sentinel, redis cluster, to avoid total crash.
+- In the process: loca echcache + hystrix current limit & degradation to avoid MySQL being killed.
+- Afterwards: redis is persistent. Once it is restarted, it will automatically load data from the disk and quickly recover the cached data.
 
 ![redis-caching-avalanche-solution](/images/redis-caching-avalanche-solution.png)
 
-用户发送一个请求，系统 A 收到请求后，先查本地 ehcache 缓存，如果没查到再查 redis。如果 ehcache 和 redis 都没有，再查数据库，将数据库中的结果，写入 ehcache 和 redis 中。
+The user sends a request. After receiving the request, system a checks the local echcahe cache first, and then redis if it is not found. If neither ehcache nor redis exist, check the database again, and write the results in the database to ehcache and redis.
 
-限流组件，可以设置每秒的请求，有多少能通过组件，剩余的未通过的请求，怎么办？**走降级**！可以返回一些默认的值，或者友情提示，或者空白的值。
+The current limiting component can set the requests per second, how many can pass the component, and what about the remaining failed requests? **Go down**! You can return some default values, or friendly hints, or blank values.
 
-好处：
-- 数据库绝对不会死，限流组件确保了每秒只有多少个请求能通过。
-- 只要数据库不死，就是说，对用户来说，2/5 的请求都是可以被处理的。
-- 只要有 2/5 的请求可以被处理，就意味着你的系统没死，对用户来说，可能就是点击几次刷不出来页面，但是多点几次，就可以刷出来一次。
+Benefits:
+- The database will never die. The current limiting component ensures that only a few requests can pass each second.
+- As long as the database is immortal, that is to say, for users, 2/5 of the requests can be processed.
+- As long as 2/5 of the requests can be processed, it means that you system is not dead. For users, it may be that you can't swipe the page after clicking several times, but you can swipe it one after clicking several times.
 
-### 缓存穿透
-对于系统A，假设一秒 5000 个请求，结果其中 4000 个请求是黑客发出的恶意攻击。
+### Cache penetration
+For system A, suppose 5000 requests per second, and 4000 of them are malicious attacks by hackers.
 
-黑客发出的那 4000 个攻击，缓存中查不到，每次你去数据库里查，也查不到。
+The 4000 attacks sent by hackers can't be found in the cache. Every time you go to the database, you can't find them either.
 
-举个栗子。数据库 id 是从 1 开始的，结果黑客发过来的请求 id 全部都是负数。这样的话，缓存中不会有，请求每次都“**视缓存于无物**”，直接查询数据库。这种恶意攻击场景的缓存穿透就会直接把数据库给打死。
+Here's a chestnut. The database ID starts from 1. As a result, all the request IDS sent by hackers are negative. In this way, there will not by any in the cache. Every time a request is "**cached in nothing**", it queries the database directly. The cache penetration of thiss malicious attack scenario will directly kill the database.
 
 ![redis-caching-penetration](/images/redis-caching-penetration.png)
 
-解决方式很简单，每次系统 A 从数据库中只要没查到，就写一个空值到缓存里去，比如 `set -999 UNKNOWN`。然后设置一个过期时间，这样的话，下次有相同的 key 来访问的时候，在缓存失效之前，都可以直接从缓存中取数据。
+The solution is very simple. Every time system a fails to find it in the database, it writes a null value to the cache, such as 'set-999 unknown'. Then set an expiration time, so that the next time the same key is accessed, the data can be fetched directly from the cache before the cache expires.
 
-### 缓存击穿
-缓存击穿，就是说某个 key 非常热点，访问非常频繁，处于集中式高并发访问的情况，当这个 key 在失效的瞬间，大量的请求就击穿了缓存，直接请求数据库，就像是在一道屏障上凿开了一个洞。
+### Cache breakdown
+Cache breakdown means that a key is very hot and frequently accessed. In the case of centralized high concurrent access, when the key fails, a large number of requests break through the cache and directly request the database, just like a hole in a barrier.
 
-解决方式也很简单，可以将热点数据设置为永远不过期；或者基于 redis or zookeeper 实现互斥锁，等待第一个请求构建完缓存之后，再释放锁，进而其它请求才能通过该 key 访问数据。
+The solution is also simple: you can set the hotspot data to never expire; or you can implement the mutual exclusive lock based on redis or zookeeper, wait for the first request to build the cache, then release the lock, and then other requests can access the data through the key.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
