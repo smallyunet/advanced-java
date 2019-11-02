@@ -1,54 +1,69 @@
 ## Interview questions
-redis 和 memcached 有什么区别？redis 的线程模型是什么？为什么 redis 单线程却能支撑高并发？
+What is the difference between redis and memcached? What is the thread model of redis? Why does redis single thread support high concurrency?
 
 ## Psychnological analysis of interviewers
-这个是问 redis 的时候，最基本的问题吧，redis 最基本的一个内部原理和特点，就是 redis 实际上是个**单线程工作模型**，你要是这个都不知道，那后面玩儿 redis 的时候，出了问题岂不是什么都不知道？
+This is the most basic question when asking redis. The most basic internal principle and feature of redis is that redis is actually a **single threaded working model**. If you don't know this, then play redis. At the time, if something went wrong, didn't you know anything?
 
-还有可能面试官会问问你 redis 和 memcached 的区别，但是 memcached 是早些年各大互联网公司常用的缓存方案，但是现在近几年基本都是 redis，没什么公司用 memcached 了。
+It is also possible that the interviewer will ask you the difference between redis and memcached, but memcached is a caching scheme commonly used by major internet companies in the early years, but not it is basically redis in recent years, and no company uses memcached.
 
 ## Analysis of interview questions
 
-### redis 和 memcached 有啥区别？
+### What is the difference between redis and memcached?
 
-#### redis 支持复杂的数据结构
-redis 相比 memcached 来说，拥有[更多的数据结构](/docs/high-concurrency/redis-data-types.md)，能支持更丰富的数据操作。如果需要缓存能够支持更复杂的结构和操作， redis 会是不错的选择。
+#### Redis supports complex data structures
+Compared to memcached, redis has [more data structures](/docs/high-concurrency/redis-data-types.md) to support richer data operations. Redis would be a good choice if you need caching to support more complex structures and operations.
 
-#### redis 原生支持集群模式
-在 redis3.x 版本中，便能支持 cluster 模式，而 memcached 没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据。
+#### Redis native support cluster mode
+In the redis 3.x version, cluster mode can be supported, and memcached does not have a native clustermode. It relies on the client to implement fragmentation to the cluster.
 
-#### 性能对比
-由于 redis 只使用**单核**，而 memcached 可以使用**多核**，所以平均每一个核上 redis 在存储小数据时比 memcached 性能更高。而在 100k 以上的数据中，memcached 性能要高于 redis。虽然 redis 最近也在存储大数据的性能上进行优化，但是比起 memcached，还是稍有逊色。
+#### Performance comparison
+Since redis only uses **single core**, and memcached can use **multicore**, on average, redis on each core has better performance than memcached when storing small data. In data above 100k, memcached performance is higher than redis. Although redis has recently optimized the performance of storing big data, it is still slightly inferior to memcached.
 
-### redis 的线程模型
-redis 内部使用文件事件处理器 `file event handler`，这个文件事件处理器是单线程的，所以 redis 才叫做单线程的模型。它采用 IO 多路复用机制同时监听多个 socket，将产生事件的 socket 压入内存队列中，事件分派器根据 socket 上的事件类型来选择对应的事件处理器进行处理。
+### Redis threading model
+Redis internally uses the file event handler `file event handler`. This file event handler is single-threaded, so redis is called a single-threaded model. It uses the IO multiplexing mechanism to simultaneously listen to multiple sockets, pushes the socket that generates the event into the memory queue, and the event dispatcher selects the corresponding event handler for processing according to the event type on the socket.
 
-文件事件处理器的结构包含 4 个部分：
+The strcture of the file event handler consists of four parts:
 
-- 多个 socket
-- IO 多路复用程序
-- 文件事件分派器
-- 事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）
+- Multiple sockets
+- IO multiplexing program
+- File Event Dispatcher 
+- Event handler (connection answer hadnler, command request handler, command reply handler)
 
-多个 socket 可能会并发产生不同的操作，每个操作对应不同的文件事件，但是 IO 多路复用程序会监听多个 socket，会将产生事件的 socket 放入队列中排队，事件分派器每次从队列中取出一个 socket，根据 socket 的事件类型交给对应的事件处理器进行处理。
+Multiple sockets may generate different operations concurrently, each operation corresponds to a different file event, but the IO multiplexer will isten to multiple sockes, queue the event-generating sockets in the queue, and the event dispatcher will each time A socket is taken from the queue and sent to the correspinding event handler for processing according to the event type of the socket.
 
-来看客户端与 redis 的一次通信过程：
+Look at the communication process between the client and redis:
 
 ![redis-single-thread-model](/images/redis-single-thread-model.png)
 
-要明白，通信是通过 socket 来完成的，不懂的同学可以先去看一看 socket 网络编程。
+Understand that communication is done through sockets. Students who don't understand can go to see socket network programming first.
 
-首先，redis 服务端进程初始化的时候，会将 server socket 的 `AE_READABLE` 事件与连接应答处理器关联。
+First, when the redis server process is initialized, the server sockets `AE_READABLE` event is associated with the connection reply handler.
 
-客户端 socket01 向 redis 进程的 server socket 请求建立连接，此时 server socket 会产生一个 `AE_READABLE` 事件，IO 多路复用程序监听到 server socket 产生的事件后，将该 socket 压入队列中。文件事件分派器从队列中获取 socket，交给**连接应答处理器**。连接应答处理器会创建一个能与客户端通信的 socket01，并将该 socket01 的 `AE_READABLE` 事件与命令请求处理器关联。
+The client socket01 requests a connection to the server socket of the redis process. At this time, the server socket will generate an `AE_READABLE` event. After the IO multiplexer listens to the event generated by the server socket, the socket is pushed into the queue. The file event dispatcher gets the socket from the queue and hands it to the **connection response handler**. The connection answering processor creates a socket01 that can communicate with the client and associates the socket01's `AE_READABLE` event with the command request handler.
 
-假设此时客户端发送了一个 `set key value` 请求，此时 redis 中的 socket01 会产生 `AE_READABLE` 事件，IO 多路复用程序将 socket01 压入队列，此时事件分派器从队列中获取到 socket01 产生的 `AE_READABLE` 事件，由于前面 socket01 的 `AE_READABLE` 事件已经与命令请求处理器关联，因此事件分派器将事件交给命令请求处理器来处理。命令请求处理器读取 socket01 的 `key value` 并在自己内存中完成 `key value` 的设置。操作完成后，它会将 socket01 的 `AE_WRITABLE` 事件与命令回复处理器关联。
+Suppose that the client sends a `set key value` request at this time. At this time, socket01 in redis will generate the `AE_READABLE` event, and the IO multiplexing program will push socket01 into the queue. At this time, the event dispatcher gets from the queue. The `AE_READABLE` event of the previous socket01 has been associated with the command request handler, the event dispatcher passes the event to the command request handler for processing. The command request handler reads the `key value` of socket01 and completes the setting of `key value` in its own memory. When the operation is complete, it associates the `AE_WRITABLE` event of socket01 with the command reply handler.
 
-如果此时客户端准备好接收返回结果了，那么 redis 中的 socket01 会产生一个 `AE_WRITABLE` 事件，同样压入队列中，事件分派器找到相关联的命令回复处理器，由命令回复处理器对 socket01 输入本次操作的一个结果，比如 `ok`，之后解除 socket01 的 `AE_WRITABLE` 事件与命令回复处理器的关联。
+If the client is ready to receive the return result, then socket01 in redis wil fenerate an `AE_WRITABLE` event, which is also pushed into the queue. The event dispatcher finds the associated command reply handler, and the command replies to the processor to socket01. Enter a result of this operation, such as `ok`, and then unlink the `AE_WRITABLE` event of socket01 from the command reply handler.
 
-这样便完成了一次通信。关于 Redis 的一次通信过程，推荐读者阅读《[Redis 设计与实现——黄健宏](https://github.com/doocs/technical-books#database)》进行系统学习。
+This completes a communicateion. For a communication process with Redis, readers are recommended to read "[Redis 设计与实现——黄健宏](https://github.com/doocs/technical-books#database)" for system learning.
 
-### 为啥 redis 单线程模型也能效率这么高？
-- 纯内存操作。
-- 核心是基于非阻塞的 IO 多路复用机制。
-- C 语言实现，一般来说，C 语言实现的程序“距离”操作系统更近，执行速度相对会更快。
-- 单线程反而避免了多线程的频繁上下文切换问题，预防了多线程可能产生的竞争问题。
+### Why is the redis single-threaded model so efficient?
+- Pure memory operation.
+- The core is based on a non-blocking IO multiplexing mecharism.
+- C language implementation, in general, the C language implementation of the program "distance" operating system is closer, the execution speed is relatively faster.
+- Single thread instead avoids the frequent context switching problem of multithreading, preventing the competition problem that multithreading may generate.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
