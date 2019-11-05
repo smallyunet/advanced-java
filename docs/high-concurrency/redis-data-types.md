@@ -1,17 +1,17 @@
 ## Interview questions
-redis 都有哪些数据类型？分别在哪些场景下使用比较合适？
+What data types are there for Redis? In which scenarios are they suitable for use?
 
 ## Psychnological analysis of interviewers
-除非是面试官感觉看你简历，是工作 3 年以内的比较初级的同学，可能对技术没有很深入的研究，面试官才会问这类问题。否则，在宝贵的面试时间里，面试官实在不想多问。
+Unless the interviewer feels that you are looking at your resume, it is a relatively junior classmate who has worked for less than 3 years. There may be no in-depth study of the technology, and the interviewer will ask such questions. Otherwise, the interviewer really didn't want ask more questions during the valuable interview time.
 
-其实问这个问题，主要有两个原因：
-- 看看你到底有没有全面的了解 redis 有哪些功能，一般怎么来用，啥场景用什么，就怕你别就会最简单的 KV 操作；
-- 看看你在实际项目里都怎么玩儿过 redis。
+In fact, there are two main reasons for asking this question:
+- See if you have a comprehensive understanding of what features redis has, how to use it in general, what to use in the scene, I am afraid that you will not have the simplesst KV operation.
+- See how you have played redis in actual projects.
 
-要是你回答的不好，没说出几种数据类型，也没说什么场景，你完了，面试官对你印象肯定不好，觉得你平时就是做个简单的 set 和 get。
+If you don't answer well, don't say a few data types, and don't say any scenes. When you are finished, the interviewer will definitely not be impressed with you. I think you usually make a simple set and get.
 
 ## Analysis of interview questions
-redis 主要有以下几种数据类型：
+Redis mainly has the following data types:
 - string
 - hash
 - list
@@ -19,13 +19,13 @@ redis 主要有以下几种数据类型：
 - sorted set
 
 ### string
-这是最简单的类型，就是普通的 set 和 get，做简单的 KV 缓存。
+This is the simplest type, the normal set and get, to do a simple KV cache.
 ```bash
 set college szu
 ```
 
 ### hash
-这个是类似 map 的一种结构，这个一般就是可以将结构化的数据，比如一个对象（前提是**这个对象没嵌套其他的对象**）给缓存在 redis 里，然后每次读写缓存的时候，可以就操作 hash 里的**某个字段**。
+This is a kind of structure similar to map. This is generally used to cache structured data, such as an object(provided that **this object does not nest other objects**) in the redis, and then read and write the cache each time. At the time, you can operate a field in the hash.
 
 ```bash
 hset person name bingo
@@ -43,17 +43,17 @@ person = {
 ```
 
 ### list
-list 是有序列表，这个可以玩儿出很多花样。
+List is an ordered list, this can play a lot of tricks.
 
-比如可以通过 list 存储一些列表型的数据结构，类似粉丝列表、文章的评论列表之类的东西。
+For example, you can store some list-type data structures through lists, similar to fan lists, article comment lists, and the like.
 
-比如可以通过 lrange 命令，读取某个闭区间内的元素，可以基于 list 实现分页查询，这个是很棒的一个功能，基于 redis 实现简单的高性能分页，可以做类似微博那种下拉不断分页的东西，性能高，就一页一页走。
+For example, you can use the lrange command to read elements in a closed interval, and you can implement paged queries based on list. This is a great feature. Based on redis, you can implement simple high-performance paging, which can be similar to microblogging. Thing, high performance, go one page at a time.
 ```bash
-# 0开始位置，-1结束位置，结束位置为-1时，表示列表的最后一个位置，即查看所有。
+# O start position, 01 end position, end position is -1, indicating the last position of the list, that is, view all.
 lrange mylist 0 -1
 ```
 
-比如可以搞个简单的消息队列，从 list 头怼进去，从 list 尾巴那里弄出来。
+For example, you can make a simple message queue, smash it in from the list header and get it out of the list tail.
 ```bash
 lpush mylist 1
 lpush mylist 2
@@ -64,59 +64,59 @@ rpop mylist
 ```
 
 ### set
-set 是无序集合，自动去重。
+Set is an unordered collection that is automatically deduplicated.
 
-直接基于 set 将系统里需要去重的数据扔进去，自动就给去重了，如果你需要对一些数据进行快速的全局去重，你当然也可以基于 jvm 内存里的 HashSet 进行去重，但是如果你的某个系统部署在多台机器上呢？得基于 redis 进行全局的 set 去重。
+Directly based on the set to throw the data in the system to be heavy, automatically give it a heavy weight, if you need to quickly deemphasize some data, you can of course de-duplicate based on the HashSet in jvm memory, but if is one of your systems deployed on multiple machines? It is necessary to perform global set deduplication based on redis.
 
-可以基于 set 玩儿交集、并集、差集的操作，比如交集吧，可以把两个人的粉丝列表整一个交集，看看俩人的共同好友是谁？对吧。
+You can play the intersection, union, and difference set based on set. For example, you can divide the fan list of two people into one, and see who their two friends are?  Right.
 
-把两个大 V 的粉丝都放在两个 set 中，对两个 set 做交集。
+Put two big V fans in two sets and intersect the two sets.
 ```bash
-#-------操作一个set-------
-# 添加元素
+#-------Operate a set-------
+# Add element
 sadd mySet 1
 
-# 查看全部元素
+# View all elements
 smembers mySet
 
-# 判断是否包含某个值
+# Determine if a value is included
 sismember mySet 3
 
-# 删除某个/些元素
+# Delete some elements
 srem mySet 1
 srem mySet 2 4
 
-# 查看元素个数
+# View the number of elements
 scard mySet
 
-# 随机删除一个元素
+# Randomly delete an element
 spop mySet
 
-#-------操作多个set-------
-# 将一个set的元素移动到另外一个set
+#-------Operation multiple sets-------
+# Move a set element to another set
 smove yourSet mySet 2
 
-# 求两set的交集
+# Find the intersection of two sets
 sinter yourSet mySet
 
-# 求两set的并集
+# Find the union of two sets
 sunion yourSet mySet
 
-# 求在yourSet中而不在mySet中的元素
+# Find elements in yourSet instead of mySet
 sdiff yourSet mySet
 ```
 
 ### sorted set
-sorted set 是排序的 set，去重但可以排序，写进去的时候给一个分数，自动根据分数排序。
+A sorted set is a sorted set that is de-duplicated but can be sorted, given a score when written in, and sutomatically sorted by score.
 ```bash
 zadd board 85 zhangsan
 zadd board 72 lisi
 zadd board 96 wangwu
 zadd board 63 zhaoliu
 
-# 获取排名前三的用户（默认是升序，所以需要 rev 改为降序）
+# Get the top three uses (the default is ascending, so rev needs to be descended)
 zrevrange board 0 3
 
-# 获取某用户的排名
+# Get the ranking of a user
 zrank board zhaoliu
 ```
