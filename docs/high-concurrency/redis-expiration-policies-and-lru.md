@@ -1,70 +1,70 @@
 ## Interview questions
-redis 的过期策略都有哪些？内存淘汰机制都有哪些？手写一下 LRU 代码实现？
+What are the redis expliration policies? What are the memory elimination mechanisms? Handwritten LRU code implementation?
 
 ## Psychnological analysis of interviewers
-如果你连这个问题都不知道，上来就懵了，回答不出来，那线上你写代码的时候，想当然的认为写进 redis 的数据就一定会存在，后面导致系统各种 bug，谁来负责？
+If you don't even know the question, you will be embarrassed when you come up, and you can't answer it. When you write the code online, you will take it for granted that the data written into redis will exist, and the system will cause various bugs. Who will be responsible for it?
 
-常见的有两个问题：
-- 往 redis 写入的数据怎么没了？
+There are two common problems:
+- Why is the data written to redis gone?
 
-可能有同学会遇到，在生产环境的 redis 经常会丢掉一些数据，写进去了，过一会儿可能就没了。我的天，同学，你问这个问题就说明 redis 你就没用对啊。redis 是缓存，你给当存储了是吧？
+Some students may encounter that redis in the production envirnoment often throws away some data and writes it in. After a while, it may be gone. My God, classmate, you ask this question to explain redis, you are useless. Redis is the cache, you give it storage right?
 
-啥叫缓存？用内存当缓存。内存是无限的吗，内存是很宝贵而且是有限的，磁盘是廉价而且是大量的。可能一台机器就几十个 G 的内存，但是可以有几个 T 的硬盘空间。redis 主要是基于内存来进行高性能、高并发的读写操作的。
+Howling cache? Use memory as a cache. Is memory infinite? Memory is very valuable and limited. Disks are cheap and large. Maybe a machine has dozens of G's of memory, but there can be a few T of hard disk space. Redis is based on memory for high-performance, high-concurrency read and write operations.
 
-那既然内存是有限的，比如 redis 就只能用 10G，你要是往里面写了 20G 的数据，会咋办？当然会干掉 10G 的数据，然后就保留 10G 的数据了。那干掉哪些数据？保留哪些数据？当然是干掉不常用的数据，保留常用的数据了。
+Since the memory is limited, for example, redis can only use 10G. If you write 20G data in it, what will it do? Of course, 10G of data will be destroyed, and then 10G of data will be retained. What data did you kill? What data is retained? Of course, it is to kill the data that is not commonly used, and keep the commonly used data.
 
-- 数据明明过期了，怎么还占用着内存？
+- The data is clearly out of date, how is it still taking up memory?
 
-这是由 redis 的过期策略来决定。
+This is determined by redis' expiration policy.
 
 ## Analysis of interview questions
-### redis 过期策略
-redis 过期策略是：**定期删除+惰性删除**。
+### Redis expiration policy
+The redis expiration plicy is: **Delete regularly + lazy delete**.
 
-所谓**定期删除**，指的是 redis 默认是每隔 100ms 就随机抽取一些设置了过期时间的 key，检查其是否过期，如果过期就删除。
+The so-called **periodic deletion** means that redis defaults to randomly extracting some keys with expiration time every 100ms, checking whether it expires, and deleting if it expires.
 
-假设 redis 里放了 10w 个 key，都设置了过期时间，你每隔几百毫秒，就检查 10w 个 key，那 redis 基本上就死了，cpu 负载会很高的，消耗在你的检查过期 key 上了。注意，这里可不是每隔 100ms 就遍历所有的设置过期时间的 key，那样就是一场性能上的**灾难**。实际上 redis 是每隔 100ms **随机抽取**一些 key 来检查和删除的。
+Assuming 10w keys are placed in redis, the expiration time is set. You check 10w keys every few every few hundred milliseconds, then redis is basically dead, cpu load will be very high, and it will be consumed in your check expiration key. Up. Note that instead of traversing all the keys that set the expiration time every 100ms, it is a performance **disaster**. In fact, redis is randomly selected every 100ms some keys to check and delete.
 
-但是问题是，定期删除可能会导致很多过期 key 到了时间并没有被删除掉，那咋整呢？所以就是惰性删除了。这就是说，在你获取某个 key 的时候，redis 会检查一下 ，这个 key 如果设置了过期时间那么是否过期了？如果过期了此时就会删除，不会给你返回任何东西。
+But the problem is that regular deletions can cause a lot of expired keys to be deleted and not deleted. So it lazy. That is to say, when you get a key, redis will check if the key expires if the expiration time is set. If it expires, it will be deleted at this time and will not return anything to you.
 
-> 获取 key 的时候，如果此时 key 已经过期，就删除，不会返回任何东西。
+> When you get the key, if the key has expired at this time, it will be deleted and nothing will be returned.
 
-但是实际上这还是有问题的，如果定期删除漏掉了很多过期 key，然后你也没及时去查，也就没走惰性删除，此时会怎么样？如果大量过期 key 堆积在内存里，导致 redis 内存块耗尽了，咋整？
+But in fact, this is stil a problem. If you delete a lot of expired keys on a regular basis, and then you don't check it in time, you will not take the lazy deletion. What happens at this time? If a large number of expired keys are piled up in memory, causing the redis memory block to run out, what?
 
-答案是：**走内存淘汰机制**。
+The answer is: **Take the memory elimination mechanism**.
 
-### 内存淘汰机制
-redis 内存淘汰机制有以下几个：
-- noeviction: 当内存不足以容纳新写入数据时，新写入操作会报错，这个一般没人用吧，实在是太恶心了。
-- **allkeys-lru**：当内存不足以容纳新写入数据时，在**键空间**中，移除最近最少使用的 key（这个是**最常用**的）。
-- allkeys-random：当内存不足以容纳新写入数据时，在**键空间**中，随机移除某个 key，这个一般没人用吧，为啥要随机，肯定是把最近最少使用的 key 给干掉啊。
-- volatile-lru：当内存不足以容纳新写入数据时，在**设置了过期时间的键空间**中，移除最近最少使用的 key（这个一般不太合适）。
-- volatile-random：当内存不足以容纳新写入数据时，在**设置了过期时间的键空间**中，**随机移除**某个 key。
-- volatile-ttl：当内存不足以容纳新写入数据时，在**设置了过期时间的键空间**中，有**更早过期时间**的 key 优先移除。
+### Memory elimination mechanism
+The redis memory elimination mechanism has the following：
+- noeviction: When the memory is not enough to accommodate the newly written data, the new write operation will report an error. This is generally not used, it is really disgusting.
+- **allkeys-lru**: When there is not enough memory to hold the newly written data, remove the least recently used key in the **keyspace** (this is the most commonly used).
+- allkeys-random: When the memory is not enough to accommodate the newly written data, in the **keyspace**, randomly remove a key, this is fenerally no one to use, for random ,it must be the least recently used key get rid of it.
+- volatile-lru: When there is not enough memory to accommodate the newly written data, remove the least recently used key in the **keyspace with** set expiration time (this is generally not appropriate).
+- volatile-random: When the memory is not enough to hold the newly written data, **randomly removes a key in the key space** where the expiration time is set.
+- volatile-ttl：When there is not enough memory to accommodate the newly written data, in the key space **where the expiration time is set**, the key with the **earlier expiration time** is preferentially removed.
 
-### 手写一个 LRU 算法
-你可以现场手写最原始的 LRU 算法，那个代码量太大了，似乎不太现实。
+### Handwriting an LRU algorithm
+You can handwrite the original LRU algorithm on the spot, the amount of code is too large, it seems not realistic.
 
-不求自己纯手工从底层开始打造出自己的 LRU，但是起码要知道如何利用已有的 JDK 数据结构实现一个 Java 版的 LRU。
+I don't want to create my own LRU from the ground up, but at least I need to know how to implement a Java version of LRU using the existing JDK data structure.
 
 ```java
 class LRUCache<K, V> extends LinkedHashMap<K, V> {
     private final int CACHE_SIZE;
 
     /**
-     * 传递进来最多能缓存多少数据
+     * How much data can be cached in
      *
-     * @param cacheSize 缓存大小
+     * @param cacheSize Cache size
      */
     public LRUCache(int cacheSize) {
-        // true 表示让 linkedHashMap 按照访问顺序来进行排序，最近访问的放在头部，最老访问的放在尾部。
+        // True means that the linkedHashMap is sorted in order of access, with the most recent access in the header and the oldest in the tail.
         super((int) Math.ceil(cacheSize / 0.75) + 1, 0.75f, true);
         CACHE_SIZE = cacheSize;
     }
 
     @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        // 当 map中的数据量大于指定的缓存个数的时候，就自动删除最老的数据。
+        // When the amount of data in the map is greater than the specified number of caches, the oldest data is automatically deleted.
         return size() > CACHE_SIZE;
     }
 }
