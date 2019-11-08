@@ -1,20 +1,20 @@
 ## Interview questions
-如何保证 redis 的高并发和高可用？redis 的主从复制原理能介绍一下么？redis 的哨兵原理能介绍一下么？
+How to ensure that Redis is highly concurrent and highly available? Can Redis' master-slave replication principle be introduced? Can Redis's sentinel principle be introduced?
 
 ## Psychnological analysis of interviewers
-其实问这个问题，主要是考考你，redis 单机能承载多高并发？如果单机扛不住如何扩容扛更多的并发？redis 会不会挂？既然 redis 会挂那怎么保证 redis 是高可用的？
+In fact, asking this question is mainly to test you, how high can the redis single machine carry? If the single machine can't help but expand, more concurrency? Will redis hang? Since redis will hang, how can I guarantee that redis is highly available?
 
-其实针对的都是项目中你肯定要考虑的一些问题，如果你没考虑过，那确实你对生产系统中的问题思考太少。
+In fact, it is aimed at some problems that you must consider in the project. If you have not considered it, then you really think too little about the problems in the production system.
 
 ## Analysis of interview questions
-如果你用 redis 缓存技术的话，肯定要考虑如何用 redis 来加多台机器，保证 redis 是高并发的，还有就是如何让 redis 保证自己不是挂掉以后就直接死掉了，即 redis 高可用。
+If you use redis caching technology, you must consider how to use redis add multiple machines, to ensure that redis is high concurrency, and how to make redis guarantee that you are not hanged and die directly, that is, redis is highly available.
 
-由于此节内容较多，因此，会分为两个小节进行讲解。
-- [redis 主从架构](/docs/high-concurrency/redis-master-slave.md)
-- [redis 基于哨兵实现高可用](/docs/high-concurrency/redis-sentinel.md)
+Because this section has more content, it will be divided into two sections for explanation.
+- [Redis master-slave architecture](/docs/high-concurrency/redis-master-slave.md)
+- [Redis based on sentinel to achieve high availability](/docs/high-concurrency/redis-sentinel.md)
 
-redis 实现**高并发**主要依靠**主从架构**，一主多从，一般来说，很多项目其实就足够了，单主用来写入数据，单机几万 QPS，多从用来查询数据，多个从实例可以提供每秒 10w 的 QPS。
+Redis implementation **high concurrency** mainly rely on **master-slave architecture**, on master and more slaves, in general, many projects are actually enough, single master used to write data, tens of thousands of QPS, single use To query the data, multiple slave instances can provide QPS of 10w per second.
 
-如果想要在实现高并发的同时，容纳大量的数据，那么就需要 redis 集群，使用 redis 集群之后，可以提供每秒几十万的读写并发。
+If you want to accommodate a large amount of data while achieving high concurrency, you need a redis cluster. After using the redis cluster, you can provide hundreds of thousands of reads and writes per second.
 
-redis 高可用，如果是做主从架构部署，那么加上哨兵就可以了，就可以实现，任何一个实例宕机，可以进行主备切换。
+Redis is highly available. If it is a master-slave architecture deployment, then you can implement it with a sentinel. Any instance can be used to switch between active and standby.

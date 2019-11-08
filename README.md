@@ -23,7 +23,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [What is the difference between Redis and Memcached? What is the threading model of Redis? Why is single-threaded Redis much more efficient than multi-threaded Memcached?](/docs/high-concurrency/redis-single-thread-model.md)
 - [What data types are there for Redis? In which scenarios are they suitable for use?](/docs/high-concurrency/redis-data-types.md)
 - [What are Redis' expiration policies? Handwritten LRU code implementation?](/docs/high-concurrency/redis-expiration-policies-and-lru.md)
-- [如何保证 Redis 高并发、高可用？Redis 的主从复制原理能介绍一下么？Redis 的哨兵原理能介绍一下么？](/docs/high-concurrency/how-to-ensure-high-concurrency-and-high-availability-of-redis.md)
+- [How to ensure that Redis is highly concurrent and highly available? Can Redis' master-slave replication principle be introduced? Can Redis's sentinel principle be introduced?](/docs/high-concurrency/how-to-ensure-high-concurrency-and-high-availability-of-redis.md)
 - [Redis 的持久化有哪几种方式？不同的持久化机制都有什么优缺点？持久化机制具体底层是如何实现的？](/docs/high-concurrency/redis-persistence.md)
 - [Redis 集群模式的工作原理能说一下么？在集群模式下，Redis 的 key 是如何寻址的？分布式寻址都有哪些算法？了解一致性 hash 算法吗？如何动态增加和删除一个节点？](/docs/high-concurrency/redis-cluster.md)
 - [What is the avalancle, penetration and breakdown of redis? What happens when redis crashes? How should the system deal with this situation? How to deal with readis penetration?](/docs/high-concurrency/redis-caching-avalanche-and-caching-penetration.md)
