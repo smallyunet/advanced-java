@@ -1,22 +1,22 @@
 ## Interview questions
-如何自己设计一个类似 Dubbo 的 RPC 框架？
+How to design a Dubbo like RPC framework?
 
 ## Psychnological analysis of interviewers
-说实话，就这问题，其实就跟问你如何自己设计一个 MQ 一样的道理，就考两个：
-- 你有没有对某个 rpc 框架原理有非常深入的理解。
-- 你能不能从整体上来思考一下，如何设计一个 rpc 框架，考考你的系统设计能力。
+To be honest, this question is the same as asking you how to design an MQ by yourself. There are two question:
+- Do you have very deep understanding of the principles of an RPC framework.
+- Can you think about how to design an RPC framework and test your system design ability as a whole.
 
 ## Analysis of interview questions
-其实问到你这问题，你起码不能认怂，因为是知识的扫盲，那我不可能给你深入讲解什么 kafka 源码剖析，dubbo 源码剖析，何况我就算讲了，你要真的消化理解和吸收，起码个把月以后了。
+In fact, when I ask you this question, at least you can't recognize it. Because it's knowledge literacy, I can't explain to you in depth what Kafka source code analysis and Dubbo source code analysis are. Besides, I'll tell you that you should really digest, understand and absorb it at least a month later. 
 
-所以我给大家一个建议，遇到这类问题，起码从你了解的类似框架的原理入手，自己说说参照 dubbo 的原理，你来设计一下，举个例子，dubbo 不是有那么多分层么？而且每个分层是干啥的，你大概是不是知道？那就按照这个思路大致说一下吧，起码你不能懵逼，要比那些上来就懵，啥也说不出来的人要好一些。
+So I'd like to give you a suggestion. If you encounter this kind of problem, at least start with the principle of similar framework you know, and talk about the principle of Dubbo by yourself. Let's design it. For example, isn't there so many layers in Dubbo? And what does each layer do? Do you know? Let's talk about it according to this idea. At least you can't be fooled. It's better than those who come up and don't know what to say.
 
-举个栗子，我给大家说个最简单的回答思路：
-- 上来你的服务就得去注册中心注册吧，你是不是得有个注册中心，保留各个服务的信息，可以用 zookeeper 来做，对吧。
-- 然后你的消费者需要去注册中心拿对应的服务信息吧，对吧，而且每个服务可能会存在于多台机器上。
-- 接着你就该发起一次请求了，咋发起？当然是基于动态代理了，你面向接口获取到一个动态代理，这个动态代理就是接口在本地的一个代理，然后这个代理会找到服务对应的机器地址。
-- 然后找哪个机器发送请求？那肯定得有个负载均衡算法了，比如最简单的可以随机轮询是不是。
-- 接着找到一台机器，就可以跟它发送请求了，第一个问题咋发送？你可以说用 netty 了，nio 方式；第二个问题发送啥格式数据？你可以说用 hessian 序列化协议了，或者是别的，对吧。然后请求过去了。
-- 服务器那边一样的，需要针对你自己的服务生成一个动态代理，监听某个网络端口了，然后代理你本地的服务代码。接收到请求的时候，就调用对应的服务代码，对吧。
+For example, let me give you a simple answer.
+- You have to go to the registration center to register your services. Do you have to have a registration center to keep the information of each service? You can do it with zookeeper, right.
+- Then your consumers need to go to the registration center to get the corresponding service information, right, and each service may exist on multiple machines.
+- Then you should make a request. How> Of course, it is based on the dynamic agent. You can obtain a dynamic agent for the interface. The dynamic agent is a local agent of the interface, and then the agent will find the corresponding machine address of the service.
+- Which machine can I find to send the request? There must be a load balancing algorithm, for example, the simplest one can be random polling.
+- Then find a machine and send a request with it. How to send the first question? You can say that netty is used, NIO way; the second question is what format data is sent? You can say that we use Hessian serialization protocol, or something, right. Then the request passed.
+- The server side is the same. You need to generate a dynamic agent for your own service, listen to a certain network port, and then proxy your local service code. When you receive a request, call the corresponding service code, right.
 
-这就是一个最最基本的 rpc 框架的思路，先不说你有多牛逼的技术功底，哪怕这个最简单的思路你先给出来行不行？
+This is the most basic idea of RPC framwork. Let's not say how powerful your technical skills are, even if you give the simplest idea first?
