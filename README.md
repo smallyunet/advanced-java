@@ -15,7 +15,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ### [Search Engines](/docs/high-concurrency/es-introduction.md)
 - [Can you explain the principle of distributed architecture of ES?](/docs/high-concurrency/es-architecture.md)
 - [How does ES write data? How does ES query data work? What about Lucene at the bottom? Do you understand the inverted index?](/docs/high-concurrency/es-write-query-search.md)
-- [es 在数据量很大的情况下（数十亿级别）如何提高查询效率啊？](/docs/high-concurrency/es-optimizing-query-performance.md)
+- [In the case of a large amount of data (billons of levels), how can a query efficiency improve?](/docs/high-concurrency/es-optimizing-query-performance.md)
 - [es 生产集群的部署架构是什么？每个索引的数据量大概有多少？每个索引大概有多少个分片？](/docs/high-concurrency/es-production-cluster.md)
 
 ### Cache
