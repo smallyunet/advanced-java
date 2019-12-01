@@ -24,7 +24,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [What data types are there for Redis? In which scenarios are they suitable for use?](/docs/high-concurrency/redis-data-types.md)
 - [What are Redis' expiration policies? Handwritten LRU code implementation?](/docs/high-concurrency/redis-expiration-policies-and-lru.md)
 - [How to ensure that Redis is highly concurrent and highly available? Can Redis' master-slave replication principle be introduced? Can Redis's sentinel principle be introduced?](/docs/high-concurrency/how-to-ensure-high-concurrency-and-high-availability-of-redis.md)
-- [Redis 的持久化有哪几种方式？不同的持久化机制都有什么优缺点？持久化机制具体底层是如何实现的？](/docs/high-concurrency/redis-persistence.md)
+- [How many ways does Redis persist? What are the advantages and disadvantages of different persistence mechanisms? How is the specific underlying layer of the persistence mechanism implemented?](/docs/high-concurrency/redis-persistence.md)
 - [Redis 集群模式的工作原理能说一下么？在集群模式下，Redis 的 key 是如何寻址的？分布式寻址都有哪些算法？了解一致性 hash 算法吗？如何动态增加和删除一个节点？](/docs/high-concurrency/redis-cluster.md)
 - [What is the avalancle, penetration and breakdown of redis? What happens when redis crashes? How should the system deal with this situation? How to deal with readis penetration?](/docs/high-concurrency/redis-caching-avalanche-and-caching-penetration.md)
 - [如何保证缓存与数据库的双写一致性？](/docs/high-concurrency/redis-consistence.md)
@@ -46,7 +46,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 ## Distributed system
 ### [Interview battery](/docs/distributed-system/distributed-system-interview.md)
 ### System split
-- [为什么要进行系统拆分？如何进行系统拆分？拆分后不用 Dubbo 可以吗？](/docs/distributed-system/why-dubbo.md)
+- [Why do system splits occur? How to do a system split? Can I use Dubbo after splitting?](/docs/distributed-system/why-dubbo.md)
 
 ### Distributed service framework
 - [说一下 Dubbo 的工作原理？注册中心挂了可以继续通信吗？](/docs/distributed-system/dubbo-operating-principle.md)
@@ -66,7 +66,7 @@ Most of the content of this project comes from ZhongHuaShiShan, and the copyrigh
 - [分布式事务了解吗？你们如何解决分布式事务问题的？TCC 如果出现网络连不通怎么办？XA 的一致性如何保证？](/docs/distributed-system/distributed-transaction.md)
 
 ### Distributed session
-- [集群部署时的分布式 Session 如何实现？](/docs/distributed-system/distributed-session.md)
+- [How to implement distributed sessions during cluster deployment?](/docs/distributed-system/distributed-session.md)
 
 ## High avalibrary architecture
 - [Introduction to Hystrix](/docs/high-availability/hystrix-introduction.md)

@@ -1,29 +1,30 @@
 ## Interview questions
-集群部署时的分布式 session 如何实现？
+How to implement distributed sessions during cluster deployment?
 
 ## Psychnological analysis of interviewers
-面试官问了你一堆 dubbo 是怎么玩儿的，你会玩儿 dubbo 就可以把单块系统弄成分布式系统，然后分布式之后接踵而来的就是一堆问题，最大的问题就是**分布式事务**、**接口幂等性**、**分布式锁**，还有最后一个就是**分布式 session**。
+The  interviewer asked you how to play a bunch of dubbo. You can play dubbo to make a monolithic system into a distributed system, and then after distribution, a bunch of problems, the biggest problem is **Distributed transaction**, **interface idempotency**, **distributed lock**, and the last one is **distributed session**.
 
-当然了，分布式系统中的问题何止这么一点，非常之多，复杂度很高，这里只是说一下常见的几个问题，也是面试的时候常问的几个。
+Of course, the problems in distributed systems are more than that. They are very many and the complexity is high. Here are just a few common questions, but also a few frequently asked during interviews.
 
 ## Analysis of interview questions
-session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存在，然后每次发请求过来都带上一个特殊的 `jsessionid cookie`，就根据这个东西，在服务端可以维护一个对应的 session 域，里面可以放点数据。
 
-一般的话只要你没关掉浏览器，cookie 还在，那么对应的那个 session 就在，但是如果 cookie 没了，session 也就没了。常见于什么购物车之类的东西，还有登录状态保存之类的。
+What is session? The browser has a cookie. This cookie has existed for a period of time, and then each time a request comes, a special `jsessionid cookie` is brought. Based on this, a correspondiing session domain can be maintained on the server. Put some data.
 
-这个不多说了，懂 Java 的都该知道这个。
+In general, as long as you do not close your browser and the cookie is still present, the corresponding, session is there, but if the cookie is gone, the session is gone. It's common in things like shopping carts, and login status preservation.
 
-单块系统的时候这么玩儿 session 没问题，但是你要是分布式系统呢，那么多的服务，session 状态在哪儿维护啊？
+Not much to say about this, anyone who knows Java should know this.
 
-其实方法很多，但是常见常用的是以下几种：
+It's okay to play sessions like this on a monolithic system, but if you are a distributed system, where are so many services and where is the session state maintained?
 
-### 完全不用 session
-使用 JWT Token 储存用户身份，然后再从数据库或者 cache 中获取其他的信息。这样无论请求分配到哪个服务器都无所谓。
+In fact, there are many methods, but the following are commonly used:
+
+### No session at all
+Use JWT Token to store user identity, and then obtain other information from the database or cache. This doesn't matter which server the request is assigned to.
 
 ### tomcat + redis
-这个其实还挺方便的，就是使用 session 的代码，跟以前一样，还是基于 tomcat 原生的 session 支持即可，然后就是用一个叫做 `Tomcat  RedisSessionManager` 的东西，让所有我们部署的 tomcat 都将 session 数据存储到 redis 即可。
+This is actually quite convenient. The code that uses the session is the same as before, or based on tomcat's native session support. Then use a thing called `Tomcat RedisSessionManager` to let all the tomcats we deploy store session data. Just go to redis.
 
-在 tomcat 的配置文件中配置：
+Configure in tomcat's configuration file:
 
 ```xml
 <Valve className="com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve" />
@@ -33,9 +34,9 @@ session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存
          port="{redis.port}"
          database="{redis.dbnum}"
          maxInactiveInterval="60"/>
-```         
+```
 
-然后指定 redis 的 host 和 port 就 ok 了。
+Then specify the host and port of redis.
 
 ```xml
 <Valve className="com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve" />
@@ -45,16 +46,16 @@ session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存
 	 maxInactiveInterval="60"/>
 ```
 
-还可以用上面这种方式基于 redis 哨兵支持的 redis 高可用集群来保存 session 数据，都是 ok 的。
+You can also use the above method to save session data based on the redis high-availability cluster supported by the redis sentry, which is ok.
 
 ### spring session + redis
-上面所说的第二种方式会与 tomcat 容器重耦合，如果我要将 web 容器迁移成 jetty，难道还要重新把 jetty 都配置一遍？
+The second method mentioned above will be recoupled with the tomcat container. If I want to migrate the web container to jetty, do I have to reconfigure the jetty?
 
-因为上面那种 tomcat + redis 的方式好用，但是会**严重依赖于web容器**，不好将代码移植到其他 web 容器上去，尤其是你要是换了技术栈咋整？比如换成了 spring cloud 或者是 spring boot 之类的呢？
+Because the above tomcat + rediis method is easy to use, but 
 
-所以现在比较好的还是基于 Java 一站式解决方案，也就是 spring。人家 spring 基本上承包了大部分我们需要使用的框架，spirng cloud 做微服务，spring boot 做脚手架，所以用 sping session 是一个很好的选择。
+So now the better one-stop solution based on Java, which is spring. People's Spring basically contracts most of the frameworks we need to use, spring cloud is used for microservices, and spring boot is used for scaffolding, so using sping session is a good choice.
 
-在 pom.xml 中配置：
+Configure in pom.xml:
 ```xml
 <dependency>
   <groupId>org.springframework.session</groupId>
@@ -68,7 +69,7 @@ session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存
 </dependency>
 ```
 
-在 spring 配置文件中配置：
+Configure in the spring configuration file:
 ```xml
 <bean id="redisHttpSessionConfiguration"
      class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
@@ -91,7 +92,7 @@ session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存
 </bean>
 ```
 
-在 web.xml 中配置：
+Configure in web.xml:
 ```xml
 <filter>
     <filter-name>springSessionRepositoryFilter</filter-name>
@@ -103,7 +104,7 @@ session 是啥？浏览器有个 cookie，在一段时间内这个 cookie 都存
 </filter-mapping>
 ```
 
-示例代码：
+Sample code:
 ```java
 @RestController
 @RequestMapping("/test")
@@ -124,6 +125,13 @@ public class TestController {
 ```
 
 
-上面的代码就是 ok 的，给 sping session 配置基于 redis 来存储 session 数据，然后配置了一个 spring session 的过滤器，这样的话，session 相关操作都会交给 spring session 来管了。接着在代码中，就用原生的 session 操作，就是直接基于 spring sesion 从 redis 中获取数据了。
+The above code is ok. Configure the redis to store session data for the spring session, and then configure a spring session filter. In this case, the session related operations will be handled by the spring session. Then in the code, use the native session operation, which is to get data from redis directly based on spring session.
 
-实现分布式的会话有很多种方式，我说的只不过是比较常见的几种方式，tomcat + redis 早期比较常用，但是会重耦合到 tomcat 中；近些年，通过 spring session 来实现。
+There are many ways to implement distributed sessions. What I am talking about are just a few of the more common ones. Tomcat + redis is more commonly used in teh early days, but it will be recoupled into tomcat . In recent years, it has been implemented through spring sessions.
+
+
+
+
+
+
+

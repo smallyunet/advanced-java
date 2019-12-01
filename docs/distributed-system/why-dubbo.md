@@ -1,14 +1,15 @@
 ## Interview questions
-为什么要进行系统拆分？如何进行系统拆分？拆分后不用 dubbo 可以吗？
+Why do system splits occur? How to do a system split? Can I use Dubbo after splitting?
 
 ## Psychnological analysis of interviewers
-从这个问题开始就进行分布式系统环节了，现在出去面试分布式都成标配了，没有哪个公司不问问你分布式的事儿。你要是不会分布式的东西，简直这简历没法看，没人会让你去面试。
 
-其实为啥会这样呢？这就是因为整个大行业技术发展的原因。
+The distributed system link has been started since this question, and now it it standard to go out to interview distributed. No company does not ask you about distributed issues. If you don't have something distributed, this resume can't be read, and no one will let you go for an interview.
 
-早些年，印象中在 2010 年初的时候，整个 IT 行业，很少有人谈分布式，更不用说微服务，虽然很多 BAT 等大型公司，因为系统的复杂性，很早就是分布式架构，大量的服务，只不过微服务大多基于自己搞的一套框架来实现而已。
+Why is this so? This is because of the technological development of the entire large industry.
 
-但是确实，那个年代，大家很重视 ssh2，很多中小型公司几乎大部分都是玩儿 struts2、spring、hibernate，稍晚一些，才进入了 spring mvc、spring、mybatis 的组合。那个时候整个行业的技术水平就是那样，当年 oracle 很火，oracle 管理员很吃香，oracle 性能优化啥的都是 IT 男的大杀招啊。连大数据都没人提，当年 OCP、OCM 等认证培训机构，火的不行。
+In the early years, it seemed to me that in eraly 2010, few people in the entire IT industry talked about distributed, let alone micorservices. Although many large companies such as BAT, bacause of the complexity of the system , they were distributed architectures very early. Services, but microservices are mostly implemented base on a set of frameworks.
+
+But indeed, in that era, everyone attached great importance to ssh2 and most of the small and medium-sized companies were mostly struts2, spring, hibernate, and later entered the combination of spring mvc, spring, and mybatis. At that time, Oracle was very hot. Oracle administractors were very popular, and Oracle performance optimization was all a big killer of IT men. No one even mentioned big data. At that time, OCP, OCM and other cerified training.
 
 但是确实随着时代的发展，慢慢的，很多公司开始接受分布式系统架构了，这里面尤为对行业有至关重要影响的，是阿里的 dubbo，**某种程度上而言，阿里在这里推动了行业技术的前进**。
 

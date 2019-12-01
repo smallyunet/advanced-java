@@ -1,41 +1,41 @@
 ## Interview questions
-redis 的持久化有哪几种方式？不同的持久化机制都有什么优缺点？持久化机制具体底层是如何实现的？
+How many ways does Redis persist? What are the advantages and disadvantages of different persistence mechanisms? How is the specific underlying layer of the persistence mechanism implemented?
 
 ## Psychnological analysis of interviewers
-redis 如果仅仅只是将数据缓存在内存里面，如果 redis 宕机了再重启，内存里的数据就全部都弄丢了啊。你必须得用 redis 的持久化机制，将数据写入内存的同时，异步的慢慢的将数据写入磁盘文件里，进行持久化。
+If redis just caches the data in memory, if redis goes down and restarts, all the data in memory will be lost. You have to use redis's persistence mechanism, white writing data to memory, asynchronously slowly write data to disk files for persistence.
 
-如果 redis 宕机重启，自动从磁盘上加载之前持久化的一些数据就可以了，也许会丢失少许数据，但是至少不会将所有数据都弄丢。
+If redis goes down and restarts, it will automatically load some previously persisted data from the disk. A little data may be lost, but at least not all data will be lost.
 
-这个其实一样，针对的都是 redis 的生产环境可能遇到的一些问题，就是 redis 要是挂了再重启，内存里的数据不就全丢了？能不能重启的时候把数据给恢复了？
+This is actually the same, for some problems that may be encountered in the production environment of redis, that is, if redis is suspended and restarted, the data in memory will be lost? Can you restore the data when restarting?
 
 ## Analysis of interview questions
-持久化主要是做灾难恢复、数据恢复，也可以归类到高可用的一个环节中去，比如你 redis 整个挂了，然后 redis 就不可用了，你要做的事情就是让 redis 变得可用，尽快变得可用。
+Persistence is mainly used for disaster recovery and data recovery,. It can also be classified as a highly available link. For example, if you redis hangs up completely, then redis will be unavailable. All you have to do is make redis available Become available as soon as possible.
 
-重启 redis，尽快让它对外提供服务，如果没做数据备份，这时候 redis 启动了，也不可用啊，数据都没了。
+Restart redis and let it provide external services as soon as possible. If no data backup is done, then redis is started and unavailable. The data is gone.
 
-很可能说，大量的请求过来，缓存全部无法命中，在 redis 里根本找不到数据，这个时候就死定了，出现**缓存雪崩**问题。所有请求没有在 redis 命中，就会去 mysql 数据库这种数据源头中去找，一下子 mysql 承接高并发，然后就挂了...
+It is possible to say that a large number of requests came over, all the caches could not be hit, and no data could be found in redis. At this time, it was dead and a **cache avalanche** problem occurred. If all requests are not hit by redis, they will go to the data source such as mysql database, all of a sudden mysql will accept high concurrency, and then it will hang up...
 
-如果你把 redis 持久化做好，备份和恢复方案做到企业级的程度，那么即使你的 redis 故障了，也可以通过备份数据，快速恢复，一旦恢复立即对外提供服务。
+If you make redis persistent, and your backup and recovery solutions are enterprise-level, then even if your redis fails, you can quickly restore it by backing up your data, and provide external services immediately once it is restored.
 
-### redis 持久化的两种方式
-- RDB：RDB 持久化机制，是对 redis 中的数据执行**周期性**的持久化。
-- AOF：AOF 机制对每条写入命令作为日志，以 `append-only` 的模式写入一个日志文件中，在 redis 重启的时候，可以通过**回放** AOF 日志中的写入指令来重新构建整个数据集。
+### Two ways to persist redis
+- RDB：RDB persistence mechanism is to perform **periodic** persistence on the data in redis.
+- AOF：The AOF mechanism writes a log for each write command, and writes it to a log file in the append-only mode. When redis restarts, it can be restarted by **playback** the write instruction in the AOF log. Build the entire data set.
 
-通过 RDB 或 AOF，都可以将 redis 内存中的数据给持久化到磁盘上面来，然后可以将这些数据备份到别的地方去，比如说阿里云等云服务。
+Through RDB or AOF, you can persist the data in redis memory to disk, and then back up the data to other places, such as cloud services such as Alibaba Cloud.
 
-如果 redis 挂了，服务器上的内存和磁盘上的数据都丢了，可以从云服务上拷贝回来之前的数据，放到指定的目录中，然后重新启动 redis，redis 就会自动根据持久化数据文件中的数据，去恢复内存中的数据，继续对外提供服务。
+If redis hangs, the memory on the server and the data on the disk are lost. You can copy the previous data from the cloud service, put it in the specified directory, and then restart redis. Redis will automatically persis the data files Data to recover data in memory and continue to provide external services.
 
-如果同时使用 RDB 和 AOF 两种持久化机制，那么在 redis 重启的时候，会使用 **AOF** 来重新构建数据，因为 AOF 中的**数据更加完整**。
+If you use both RDB and AOF persistence mechanisms, when redis restarts, **AOF** will be used to reconstruct the data, because the **data in AOF is more complete**.
 
-#### RDB 优缺点
-- RDB 会生成多个数据文件，每个数据文件都代表了某一个时刻中 redis 的数据，这种多个数据文件的方式，**非常适合做冷备**，可以将这种完整的数据文件发送到一些远程的安全存储上去，比如说 Amazon 的 S3 云服务上去，在国内可以是阿里云的 ODPS 分布式存储上，以预定好的备份策略来定期备份 redis 中的数据。
-- RDB 对 redis 对外提供的读写服务，影响非常小，可以让 redis **保持高性能**，因为 redis 主进程只需要 fork 一个子进程，让子进程执行磁盘 IO 操作来进行 RDB 持久化即可。
+#### Advantages and disadvantages of RDB
+- RDB will generate multiple data files, each of which represents the redis data at a certain moment. This method of multiple data files is **very suitable for cold standby**. This complete data file can be Sent to some remote secure storage, such as Amazon's S3 cloud service, which can be Alibaba Cloud's ODPS distributed storage in China, and regularly backs up data in redis with a predetermined backup strategy.
+- The impact of RDB on the read an write services provided by redis to the outside is very small. Redis **maintains high performance**, because the redis main process only needs to fork a child process, and let the cchild process perform disk IO operations for RDB persistence.
 - 相对于 AOF 持久化机制来说，直接基于 RDB 数据文件来重启和恢复 redis 进程，更加快速。
 
 - 如果想要在 redis 故障时，尽可能少的丢失数据，那么 RDB 没有 AOF 好。一般来说，RDB 数据快照文件，都是每隔 5 分钟，或者更长时间生成一次，这个时候就得接受一旦 redis 进程宕机，那么会丢失最近 5 分钟的数据。
 - RDB 每次在 fork 子进程来执行 RDB 快照数据文件生成的时候，如果数据文件特别大，可能会导致对客户端提供的服务暂停数毫秒，或者甚至数秒。
 
-#### AOF 优缺点
+#### AOF advantages and disadvantages
 - AOF 可以更好的保护数据不丢失，一般 AOF 会每隔 1 秒，通过一个后台线程执行一次`fsync`操作，最多丢失 1 秒钟的数据。
 - AOF 日志文件以 `append-only` 模式写入，所以没有任何磁盘寻址的开销，写入性能非常高，而且文件不容易破损，即使文件尾部破损，也很容易修复。
 - AOF 日志文件即使过大的时候，出现后台重写操作，也不会影响客户端的读写。因为在 `rewrite` log 的时候，会对其中的指令进行压缩，创建出一份需要恢复数据的最小日志出来。在创建新日志文件的时候，老的日志文件还是照常写入。当新的 merge 后的日志文件 ready 的时候，再交换新老日志文件即可。
@@ -44,7 +44,7 @@ redis 如果仅仅只是将数据缓存在内存里面，如果 redis 宕机了�
 - AOF 开启后，支持的写 QPS 会比 RDB 支持的写 QPS 低，因为 AOF 一般会配置成每秒 `fsync` 一次日志文件，当然，每秒一次 `fsync`，性能也还是很高的。（如果实时写入，那么 QPS 会大降，redis 性能会大大降低）
 - 以前 AOF 发生过 bug，就是通过 AOF 记录的日志，进行数据恢复的时候，没有恢复一模一样的数据出来。所以说，类似 AOF 这种较为复杂的基于命令日志 / merge / 回放的方式，比基于 RDB 每次持久化一份完整的数据快照文件的方式，更加脆弱一些，容易有 bug。不过 AOF 就是为了避免 rewrite 过程导致的 bug，因此每次 rewrite 并不是基于旧的指令日志进行 merge 的，而是**基于当时内存中的数据进行指令的重新构建**，这样健壮性会好很多。
 
-### RDB 和 AOF 到底该如何选择
-- 不要仅仅使用 RDB，因为那样会导致你丢失很多数据；
-- 也不要仅仅使用 AOF，因为那样有两个问题：第一，你通过 AOF 做冷备，没有 RDB 做冷备来的恢复速度更快；第二，RDB 每次简单粗暴生成数据快照，更加健壮，可以避免 AOF 这种复杂的备份和恢复机制的 bug；
-- redis 支持同时开启开启两种持久化方式，我们可以综合使用 AOF 和 RDB 两种持久化机制，用 AOF 来保证数据不丢失，作为数据恢复的第一选择; 用 RDB 来做不同程度的冷备，在 AOF 文件都丢失或损坏不可用的时候，还可以使用 RDB 来进行快速的数据恢复。
+### How to choose RDB and AOF
+- Don't just use RDB, because that will cause you to lose a lot of data;
+- Don't just use AOF, because there are two problems: First, you can perform cold standby through AOF, and the recovery speed is faster without cold standby with RDB; Second, RDB simply and crudely generates data snapshots each time, which is more robust Can avoid the bug of AOF, a complicated backup and recovery mechanism;
+- Redis supports the simultaneous activation of two persistence methods. We can use both AOF and RDB persistence mechanisms, and use AOF to ensure that data is not lost, as the fist choice for data recovery. Use RDB to do cold backup at different levels You can also use RDB for fast data revoery when AOF files are lost or damaged and unavailable.
